@@ -12,6 +12,7 @@ import 'cleaner_screen.dart';
 import 'exclusions_screen.dart';
 import 'history_screen.dart';
 import 'schedule_screen.dart';
+import 'security_screen.dart';
 import 'tree_map_screen.dart';
 import 'uninstaller_screen.dart';
 
@@ -84,6 +85,8 @@ class _HomeShellState extends State<HomeShell> {
         return ScheduleScreen(privileged: _privileged);
       case ToolNav(view: ToolView.uninstaller):
         return const UninstallerScreen();
+      case SecurityNav(view: final v):
+        return SecurityScreen(view: v);
     }
   }
 

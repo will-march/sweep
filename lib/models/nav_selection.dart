@@ -19,6 +19,15 @@ extension ToolViewInfo on ToolView {
       };
 }
 
+enum SecurityView { launchItems, threatScan }
+
+extension SecurityViewInfo on SecurityView {
+  String get title => switch (this) {
+        SecurityView.launchItems => 'Launch Items',
+        SecurityView.threatScan => 'Threat Scan',
+      };
+}
+
 sealed class NavSelection {
   const NavSelection();
   String get pageTitle;
@@ -41,6 +50,13 @@ class UsageNav extends NavSelection {
 class ToolNav extends NavSelection {
   final ToolView view;
   const ToolNav(this.view);
+  @override
+  String get pageTitle => view.title;
+}
+
+class SecurityNav extends NavSelection {
+  final SecurityView view;
+  const SecurityNav(this.view);
   @override
   String get pageTitle => view.title;
 }

@@ -124,6 +124,28 @@ class AuroraSidebar extends StatelessWidget {
                       onTap: () =>
                           onSelect(const ToolNav(ToolView.uninstaller)),
                     ),
+                    const SizedBox(height: AuroraTokens.sp4),
+                    const _SectionHeader('Security'),
+                    _NavRow(
+                      icon: CupertinoIcons.bolt_fill,
+                      label: 'Launch Items',
+                      accent: scheme.primary,
+                      active: selection is SecurityNav &&
+                          (selection as SecurityNav).view ==
+                              SecurityView.launchItems,
+                      onTap: () => onSelect(
+                          const SecurityNav(SecurityView.launchItems)),
+                    ),
+                    _NavRow(
+                      icon: CupertinoIcons.shield_lefthalf_fill,
+                      label: 'Threat Scan',
+                      accent: scheme.primary,
+                      active: selection is SecurityNav &&
+                          (selection as SecurityNav).view ==
+                              SecurityView.threatScan,
+                      onTap: () => onSelect(
+                          const SecurityNav(SecurityView.threatScan)),
+                    ),
                   ],
                 ),
               ),
