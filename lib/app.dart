@@ -35,6 +35,10 @@ class _IMaculateAppState extends State<IMaculateApp> {
   }
 
   Future<void> _resolveStage() async {
+    // Wipe markers if the user / QA launched with
+    // IMACULATE_RESET_ONBOARDING=1. Done before reading any state so
+    // the gate behaves identically to a brand-new install.
+    await _firstLaunch.maybeReset();
     final intro = await _firstLaunch.hasSeenIntro();
     final tour = await _firstLaunch.hasSeenTour();
     final walkthrough = await _firstLaunch.hasSeenWalkthrough();

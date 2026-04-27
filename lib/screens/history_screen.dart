@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/clean_event.dart';
+import '../services/first_launch_service.dart';
 import '../services/history_service.dart';
 import '../theme/tokens.dart';
 import '../utils/byte_formatter.dart';
@@ -17,6 +18,7 @@ class HistoryScreen extends StatefulWidget {
 
 class _HistoryScreenState extends State<HistoryScreen> {
   final _history = HistoryService();
+  final _firstLaunch = FirstLaunchService();
   Future<List<CleanEvent>>? _events;
 
   @override
@@ -65,6 +67,40 @@ class _HistoryScreenState extends State<HistoryScreen> {
     Process.run('open', ['$home/.Trash']);
   }
 
+  Future<void> _replayOnboarding() async {
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Replay first-launch tutorial?'),
+        content: const Text(
+          "This clears the markers that remember you've seen the splash, "
+          "the intro tour and the live walkthrough. The next time you "
+          "launch iMaculate, all three will fire from the start as if "
+          "the app was freshly installed.",
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel')),
+          FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Reset markers')),
+        ],
+      ),
+    );
+    if (ok != true) return;
+    await _firstLaunch.reset();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          'Tutorial reset. Quit and relaunch iMaculate to see it.',
+        ),
+        duration: Duration(seconds: 4),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -81,6 +117,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           _Header(
             onClear: _clearAll,
             onOpenTrash: _openTrash,
+            onReplayTutorial: _replayOnboarding,
           ),
           const SizedBox(height: AuroraTokens.sp4),
           Expanded(
@@ -136,7 +173,12 @@ class _HistoryScreenState extends State<HistoryScreen> {
 class _Header extends StatelessWidget {
   final VoidCallback onClear;
   final VoidCallback onOpenTrash;
-  const _Header({required this.onClear, required this.onOpenTrash});
+  final VoidCallback onReplayTutorial;
+  const _Header({
+    required this.onClear,
+    required this.onOpenTrash,
+    required this.onReplayTutorial,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -190,6 +232,12 @@ class _Header extends StatelessWidget {
         TextButton(
           onPressed: onClear,
           child: const Text('Clear log'),
+        ),
+        const SizedBox(width: AuroraTokens.sp2),
+        TextButton.icon(
+          onPressed: onReplayTutorial,
+          icon: const Icon(CupertinoIcons.play_circle, size: 14),
+          label: const Text('Replay tutorial'),
         ),
       ],
     );
