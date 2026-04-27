@@ -223,7 +223,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           Text(
             'Pick a frequency, choose which jobs run, and (optionally) '
             'install a launchd agent so the schedule fires even when '
-            "iMaculate isn't open. The agent runs in your user session "
+            "Sweep isn't open. The agent runs in your user session "
             'at 03:30 local time on the cadence you choose.',
             style: TextStyle(
               fontSize: 12,
@@ -545,7 +545,7 @@ class _BackgroundAgentCard extends StatelessWidget {
                     Text(
                       installed
                           ? 'Installed at ~/Library/LaunchAgents/'
-                              'com.imaculate.scheduler.plist'
+                              'dev.willmarch.sweep.scheduler.plist'
                           : 'Off — schedule only fires when the GUI is open',
                       style: TextStyle(
                         fontSize: 12,

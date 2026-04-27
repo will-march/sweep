@@ -16,7 +16,7 @@ The README references these exact files. Drop matching images/gifs at the paths 
 
 ```bash
 # Window grab (clean, with rounded corners and shadow on transparent bg)
-# Press Cmd+Shift+4, then Space, then click the iMaculate window.
+# Press Cmd+Shift+4, then Space, then click the Sweep window.
 
 # Strip shadow and trim to window only:
 # Hold Option while clicking — saves to ~/Desktop without the drop shadow.
@@ -40,7 +40,7 @@ screencapture -o -W docs/screenshots/cleaner.png
 
 Easiest path on macOS:
 
-1. **Record screen** with QuickTime (File → New Screen Recording) and select the iMaculate window.
+1. **Record screen** with QuickTime (File → New Screen Recording) and select the Sweep window.
 2. Convert `.mov` → `.gif` with `ffmpeg`:
 
     ```bash

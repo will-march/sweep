@@ -11,9 +11,9 @@ class LaunchdResult {
 }
 
 /// Manages our user-scope launchd agent at
-/// `~/Library/LaunchAgents/com.imaculate.scheduler.plist`.
+/// `~/Library/LaunchAgents/dev.willmarch.sweep.scheduler.plist`.
 ///
-/// The plist re-runs the iMaculate binary in headless mode on the
+/// The plist re-runs the Sweep binary in headless mode on the
 /// user's chosen cadence so scheduled cleans / threat scans / defs
 /// updates fire even when the GUI is closed. We write the plist
 /// ourselves and bootstrap it via `launchctl bootstrap gui/$UID …`
@@ -24,7 +24,7 @@ class LaunchdResult {
 /// `~/Library/LaunchAgents/` cover the realistic "wake up at 3am
 /// while my Mac is on" use case.
 class LaunchdAgentService {
-  static const label = 'com.imaculate.scheduler';
+  static const label = 'dev.willmarch.sweep.scheduler';
 
   /// Override the plist target dir in tests (writes there instead of
   /// the real `~/Library/LaunchAgents`). When null we read HOME.

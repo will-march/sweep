@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import '../../utils/splash_animation.dart';
 
 /// 18 particles that start far out on a circle and spiral inward over the
-/// first 1.6s, blooming at the centre into the iMaculate mark.
+/// first 1.6s, blooming at the centre into the Sweep mark.
 class SparkParticles extends StatelessWidget {
   final double t;
   const SparkParticles({super.key, required this.t});

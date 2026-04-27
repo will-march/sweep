@@ -25,7 +25,7 @@ class _TourScreenState extends State<TourScreen> {
     _Page(
       eyebrow: '01 · Welcome',
       title: 'Reclaim disk\nwithout the dread.',
-      body: 'iMaculate finds the gigabytes hiding in caches, '
+      body: 'Sweep finds the gigabytes hiding in caches, '
           'derived data and forgotten archives — and shows you '
           'every byte before it lifts a finger.',
       icon: CupertinoIcons.sparkles,
@@ -115,7 +115,7 @@ class _TourScreenState extends State<TourScreen> {
           'a deep clean is how cleaners eat user data.',
       icon: CupertinoIcons.calendar,
       bullets: [
-        'Schedule fires while iMaculate is open.',
+        'Schedule fires while Sweep is open.',
         'Background scheduling lands with the launchd helper.',
       ],
       gradient: [
@@ -128,7 +128,7 @@ class _TourScreenState extends State<TourScreen> {
       eyebrow: '07 · Uninstaller',
       title: 'Apps + their\nleftovers.',
       body: 'Drag-to-Trash leaves caches, preferences and '
-          'containers behind. iMaculate trashes the bundle and '
+          'containers behind. Sweep trashes the bundle and '
           'every file matched by bundle ID.',
       icon: CupertinoIcons.app_badge_fill,
       bullets: [

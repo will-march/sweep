@@ -7,7 +7,7 @@ import '../widgets/splash/phase_indicator.dart';
 import '../widgets/splash/spark_particles.dart';
 import '../widgets/splash/step_cards.dart';
 
-/// Animated first-launch intro for iMaculate. Storyboard:
+/// Animated first-launch intro for Sweep. Storyboard:
 ///   0.0–1.6s · BOOT     — backdrop fades in, sparks spiral into mark
 ///   0.6–3.0s · BRAND    — mark blooms, wordmark types in, tagline fades
 ///   3.0–4.4s            — brand shrinks to top header

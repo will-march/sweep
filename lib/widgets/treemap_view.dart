@@ -7,7 +7,7 @@ import '../utils/squarify.dart';
 
 /// Squarified treemap view of a list of children, each rendered as a tile
 /// with a tonal gradient. Mirrors the visual treatment of
-/// `iMaculate Treemap.html` (Aurora design bundle): adaptive labels, focus
+/// `Sweep Treemap.html` (Aurora design bundle): adaptive labels, focus
 /// stroke, and a reclaim badge for entries the cleaner can wipe.
 ///
 /// Single tap selects a tile (sets focused, fires [onTap]); double tap

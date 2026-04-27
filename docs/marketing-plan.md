@@ -1,6 +1,6 @@
-# iMaculate · 90-day Marketing Plan
+# Sweep · 90-day Marketing Plan
 
-A standalone playbook for taking iMaculate from "code on a private fork" to "$30–80k/yr indie macOS app on no ad budget." Two halves:
+A standalone playbook for taking Sweep from "code on a private fork" to "$30–80k/yr indie macOS app on no ad budget." Two halves:
 
 1. **[Pre-launch software readiness](#pre-launch-software-readiness)** — what to fix in the app *before* the first public push. Don't market a v1.0 that hits Gatekeeper warnings.
 2. **[The 90-day plan](#the-90-day-plan)** — week-by-week schedule for the launch itself.
@@ -9,7 +9,7 @@ A standalone playbook for taking iMaculate from "code on a private fork" to "$30
 
 ## Positioning
 
-> **iMaculate is the open-source macOS cleaner that puts every deletion in a restorable archive. Free for one Mac. MIT-licensed. No telemetry. No upsell ads. The threat feed is public.**
+> **Sweep is the open-source macOS cleaner that puts every deletion in a restorable archive. Free for one Mac. MIT-licensed. No telemetry. No upsell ads. The threat feed is public.**
 
 Three differentiators MacPaw can't credibly claim:
 
@@ -55,9 +55,9 @@ These have to ship *before* you tell anyone outside your inner circle.
 - [ ] **Apple Developer Program enrolment** ($99/yr). The prerequisite to everything else.
 - [ ] **Developer ID Application code-signing.** Set `CODE_SIGN_IDENTITY` in Xcode. Every release artefact must be signed.
 - [ ] **Notarization in the release pipeline.** `xcrun notarytool submit … --wait && xcrun stapler staple <dmg>`. Bake it into the GitHub Actions release workflow so cutting v1.x.y is one git tag.
-- [ ] **Sparkle auto-update.** Add the [Sparkle 2 Swift package](https://sparkle-project.org/), generate Ed25519 keys, host the appcast on `imaculate.app/appcast.xml`. Without this, every release requires users to manually re-download — Reddit will roast you for it.
+- [ ] **Sparkle auto-update.** Add the [Sparkle 2 Swift package](https://sparkle-project.org/), generate Ed25519 keys, host the appcast on `sweep.app/appcast.xml`. Without this, every release requires users to manually re-download — Reddit will roast you for it.
 - [ ] **`LICENSE` file at repo root.** README claims MIT but the file is missing. Legal hygiene; a few prosumers will refuse to install OSS without one.
-- [ ] **Privacy policy.** Plain English, hosted at `imaculate.app/privacy`. Even with zero telemetry you need it; payment processors and Setapp require one.
+- [ ] **Privacy policy.** Plain English, hosted at `sweep.app/privacy`. Even with zero telemetry you need it; payment processors and Setapp require one.
 - [ ] **Crash reporting (opt-in)**. Sentry free tier. Without it you'll have no idea when v1.1.0 broke for a class of users.
 
 ### P1 — strongly recommended before launch
@@ -66,8 +66,8 @@ These won't block the post but they double conversion when present.
 
 - [ ] **Real app icon.** The current sparkle gradient icon is a placeholder. Spend $200–500 with a designer (Dribbble, [Noun Project](https://thenounproject.com/), or use [App Icon Generator](https://appiconmaker.co/)) for a proper rounded-square macOS icon with optical adjustments. The icon is the Twitter avatar, the Dock face, the App Store thumbnail, the Finder preview. It works very hard.
 - [ ] **DMG background art.** Current DMG opens to a blank window. CleanMyMac, Sketch, Tower etc all show a styled background with an arrow pointing from the app to the Applications shortcut. Use [`create-dmg`](https://github.com/sindresorhus/create-dmg) instead of plain `hdiutil`.
-- [ ] **Landing page** at `imaculate.app` (or whatever domain you grab). One page. Hero shot + 90s screencast + three-bullet differentiator + Download button + "what's new" + footer. Use [Astro](https://astro.build) or [Framer](https://www.framer.com/) — neither needs ad spend.
-- [ ] **Window size memory.** Most macOS apps remember last position. Currently iMaculate spawns at default size every launch. Small detail; users notice.
+- [ ] **Landing page** at `sweep.app` (or whatever domain you grab). One page. Hero shot + 90s screencast + three-bullet differentiator + Download button + "what's new" + footer. Use [Astro](https://astro.build) or [Framer](https://www.framer.com/) — neither needs ad spend.
+- [ ] **Window size memory.** Most macOS apps remember last position. Currently Sweep spawns at default size every launch. Small detail; users notice.
 - [ ] **Keyboard shortcuts.** ⌘R rescan, ⌘, preferences, ⌘W close window (keeps menu bar alive), ⌘Q quit. Match macOS conventions.
 - [ ] **Onboarding skip-on-already-shown.** Verify that `walkthrough_seen` actually prevents the live coachmark from firing again. If a user hits Skip then re-launches, do they see it again?
 - [ ] **Hero screenshots that aren't the cleaner screen.** Tree Map drilled into Library/Caches with the detail panel populated → far more visual punch than a list.
@@ -77,7 +77,7 @@ These won't block the post but they double conversion when present.
 - [ ] **Preferences screen.** Currently no central settings panel. Users want a place to flip theme, change default cleaning level, manage Sparkle channels.
 - [ ] **App Store sandboxed variant.** Smaller feature set; secondary discovery channel. Plan for v1.2.
 - [ ] **Localization completeness.** Scaffolding is there, most strings are still English. Push at least Spanish / Japanese / German to 80% — the Setapp Asia-Pacific audience cares.
-- [ ] **Comparison table page.** "iMaculate vs CleanMyMac vs OnyX" — honest, fair, three columns. Power users reference this when recommending you on Reddit.
+- [ ] **Comparison table page.** "Sweep vs CleanMyMac vs OnyX" — honest, fair, three columns. Power users reference this when recommending you on Reddit.
 - [ ] **Email capture on the landing page.** Even just "tell me when v1.1 ships." 200 emails on launch day → 200 first-day downloads.
 
 ### Marketing-specific assets
@@ -85,7 +85,7 @@ These won't block the post but they double conversion when present.
 These don't ship in the app but they do ship in the launch.
 
 - [ ] **90-second product screencast.** Show the splash → Light Scrub → reclaim 2 GB → restore from History. No voiceover needed; just background music + on-screen captions. ScreenStudio or QuickTime + iMovie. Upload to YouTube unlisted; embed in the landing page; gif version for Twitter.
-- [ ] **Before/after hero shot.** Standard macOS marketing trope. "Before iMaculate: 18 GB of caches you forgot existed. After: clean."
+- [ ] **Before/after hero shot.** Standard macOS marketing trope. "Before Sweep: 18 GB of caches you forgot existed. After: clean."
 - [ ] **One-pager PDF / press kit.** App icon, three screenshots, two-paragraph description, key facts (size, requirements, license, price), founder quote, contact email. Email this to reviewers.
 - [ ] **Reviewer outreach list.** 30–50 people. YouTubers (Snazzy Labs, MacRumors, Mac Sources, Stephen Robles), bloggers (MacStories, AppAddict, Mac Power Users podcast), newsletters (TLDR Mac, Mac.AppStorm), Twitter accounts (@parkerortolani, @rene), redditors who post mac apps regularly.
 
@@ -99,7 +99,7 @@ These don't ship in the app but they do ship in the launch.
 
 Week 1:
 - Apple Developer enrolment, signing certs in Xcode keychain, sign the v1.0.1 build manually, verify Gatekeeper acceptance.
-- Set up `imaculate.app` domain ($12/yr Cloudflare or Porkbun). Park it.
+- Set up `sweep.app` domain ($12/yr Cloudflare or Porkbun). Park it.
 - Write the privacy policy (steal Tot's structure, change the names).
 
 Week 2:
@@ -129,7 +129,7 @@ Week 5:
 - Iterate based on what breaks. There will be things. Patch v1.1.x.
 
 Week 6:
-- Show HN dry run on a Sunday morning (lowest traffic day). Title: "iMaculate – open-source CleanMyMac alternative with restorable deletes." Don't expect front page; gauge response.
+- Show HN dry run on a Sunday morning (lowest traffic day). Title: "Sweep – open-source CleanMyMac alternative with restorable deletes." Don't expect front page; gauge response.
 - Tweet/Mastodon thread: "I built an open-source mac cleaner. Here's why every commercial cleaner is dishonest about what they delete." Real opinion, not marketing fluff.
 - Reach out to 5 reviewers from the press kit list. *Personal* emails. "Hey [name], I've been reading your work for years. I built X for [reason]. Would you take a look?" No template-mailing.
 
@@ -154,7 +154,7 @@ Week 8 — sustain:
 **Goal: convert launch attention into a sustainable trickle.**
 
 Weeks 9–10:
-- Write follow-up content. "v1.1 ships notarized — here's what changed." "Real-world numbers from 1,000 cleans." "How iMaculate's restore log actually works." Each post is fuel for the SEO + Reddit ecosystem.
+- Write follow-up content. "v1.1 ships notarized — here's what changed." "Real-world numbers from 1,000 cleans." "How Sweep's restore log actually works." Each post is fuel for the SEO + Reddit ecosystem.
 - Set up GitHub Sponsors. Modest income, but visible "support" button matters psychologically to OSS users.
 - Submit to MacUpdate, AlternativeTo, Mac.AppStorm round-up requests.
 
@@ -170,7 +170,7 @@ Once the 90 days end, switch to **maintenance marketing** — sustainable foreve
 
 | Cadence | Channel | What |
 | --- | --- | --- |
-| Weekly | Twitter/Mastodon | One useful thread or screenshot. "How iMaculate found 3 GB of orphan launch agents on my Mac." |
+| Weekly | Twitter/Mastodon | One useful thread or screenshot. "How Sweep found 3 GB of orphan launch agents on my Mac." |
 | Bi-weekly | Blog | One short technical post. SEO compounds for years. |
 | Monthly | Newsletter | Updates to existing users. Build the list. |
 | Per release | All channels | "v1.x ships with [feature]." Coordinate Twitter + Mastodon + r/macapps + HN if interesting enough. |
@@ -189,7 +189,7 @@ Set these up *before* launch. Use Plausible / Fathom for the landing page (priva
 - **Crash-free sessions**: %. Goal: 99.5%+.
 - **Setapp activations**: per month, once accepted. Goal: 200 by month 6.
 - **GitHub stars**: vanity but real for OSS credibility. Goal: 1,000 by end of year 1.
-- **Inbound mentions**: weekly count of "iMaculate" appearing in posts you didn't write. This is the *real* signal that organic marketing is compounding.
+- **Inbound mentions**: weekly count of "Sweep" appearing in posts you didn't write. This is the *real* signal that organic marketing is compounding.
 
 ---
 
@@ -212,7 +212,7 @@ Set these up *before* launch. Use Plausible / Fathom for the landing page (priva
 | Item | Cost |
 | --- | --- |
 | Apple Developer Program | $99 |
-| Domain `imaculate.app` | $24/yr |
+| Domain `sweep.app` | $24/yr |
 | Designer for app icon | $300 (one-time) |
 | Sparkle / Sentry / Plausible | $0 (free tiers cover ≥1k users) |
 | Cloudflare / Netlify hosting | $0 |

@@ -1,18 +1,18 @@
-# iMaculate
+# Sweep
 
 > A native macOS cache cleaner built in Flutter — four cleanup modes, a live disk tree-map, and a Trash-first deletion policy so you never lose anything you didn't mean to.
 
 <p align="center">
-  <img src="docs/screenshots/hero.png" alt="iMaculate hero shot" width="820"/>
+  <img src="docs/screenshots/hero.png" alt="Sweep hero shot" width="820"/>
 </p>
 
 <p align="center">
-  <a href="https://github.com/will-march/imaculate/releases/latest">
+  <a href="https://github.com/will-march/sweep/releases/latest">
     <img alt="Download for macOS" src="https://img.shields.io/badge/Download-macOS%20.dmg-7f5af0?style=for-the-badge&logo=apple&logoColor=white"/>
   </a>
   &nbsp;
-  <a href="https://github.com/will-march/imaculate/releases/latest">
-    <img alt="GitHub release" src="https://img.shields.io/github/v/release/will-march/imaculate?style=for-the-badge&color=1d1d1f"/>
+  <a href="https://github.com/will-march/sweep/releases/latest">
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/will-march/sweep?style=for-the-badge&color=1d1d1f"/>
   </a>
   &nbsp;
   <img alt="brew tap" src="https://img.shields.io/badge/brew-will--march%2Ftap-fbb040?style=for-the-badge&logo=homebrew&logoColor=white"/>
@@ -25,7 +25,7 @@
   <img alt="status"  src="https://img.shields.io/badge/status-actively%20developed-7f5af0?style=flat-square"/>
 </p>
 
-> **Get it now:** the [latest release](https://github.com/will-march/imaculate/releases/latest) ships a `.dmg` (drag-to-Applications) and a `.zip` of the `iMaculate.app` bundle. macOS 10.15+, Apple Silicon and Intel.
+> **Get it now:** the [latest release](https://github.com/will-march/sweep/releases/latest) ships a `.dmg` (drag-to-Applications) and a `.zip` of the `Sweep.app` bundle. macOS 10.15+, Apple Silicon and Intel.
 
 ---
 
@@ -45,7 +45,7 @@
 
 macOS quietly hoards gigabytes in caches, derived data, simulator runtimes, and old archives. The built-in tools don't show *where* the bytes went, and most third-party cleaners either delete too aggressively or hide what they're touching.
 
-iMaculate's design rules:
+Sweep's design rules:
 
 1. **Show the path, the size, and the risk** before anything is touched.
 2. **Trash first, delete second** — moves go to Finder's Trash by default; permanent removal is opt-in.
@@ -84,7 +84,7 @@ Sizes come from [`CacheScanner`](lib/services/cache_scanner.dart): privileged sc
 
 ```
 lib/
-├── main.dart                 # Entry — runs IMaculateApp
+├── main.dart                 # Entry — runs SweepApp
 ├── app.dart                  # Theme + first-launch gate (splash vs. shell)
 ├── data/
 │   └── cleaning_targets.dart # Hard-coded paths per cleaning mode
@@ -116,18 +116,18 @@ lib/
 
 ```sh
 brew tap will-march/tap
-brew install --cask imaculate
+brew install --cask sweep
 ```
 
-The cask pulls the `.dmg` from the latest GitHub release, drags `iMaculate.app` into `/Applications`, and prints the Gatekeeper override one-liner. Updates land via `brew upgrade --cask imaculate`. Clean uninstall with `brew uninstall --cask --zap imaculate` — the `--zap` flag also wipes `~/Library/Application Support/iMaculate` and the launchd agent plist.
+The cask pulls the `.dmg` from the latest GitHub release, drags `Sweep.app` into `/Applications`, and prints the Gatekeeper override one-liner. Updates land via `brew upgrade --cask sweep`. Clean uninstall with `brew uninstall --cask --zap sweep` — the `--zap` flag also wipes `~/Library/Application Support/Sweep` and the launchd agent plist.
 
 ### Direct download
 
-Head to **[releases/latest](https://github.com/will-march/imaculate/releases/latest)** for the latest `.dmg` (drag-to-Applications, ~20 MB) or `.zip` (raw `.app`, ~50 MB). Drag `iMaculate.app` to `/Applications`.
+Head to **[releases/latest](https://github.com/will-march/sweep/releases/latest)** for the latest `.dmg` (drag-to-Applications, ~20 MB) or `.zip` (raw `.app`, ~50 MB). Drag `Sweep.app` to `/Applications`.
 
-**First launch** — macOS Gatekeeper will refuse to open it because the build isn't signed with an Apple Developer ID yet. Right-click `iMaculate.app` → **Open** → **Open** to override. Subsequent launches work normally.
+**First launch** — macOS Gatekeeper will refuse to open it because the build isn't signed with an Apple Developer ID yet. Right-click `Sweep.app` → **Open** → **Open** to override. Subsequent launches work normally.
 
-iMaculate will request administrator privileges so it can read system caches under `/Library` and `/var`. Decline if you only want user-scope cleaning — everything else still works.
+Sweep will request administrator privileges so it can read system caches under `/Library` and `/var`. Decline if you only want user-scope cleaning — everything else still works.
 
 ---
 
@@ -135,25 +135,25 @@ iMaculate will request administrator privileges so it can read system caches und
 
 The `.app` ships a full CLI surface — every GUI feature is also reachable from a terminal, launchd, cron, or ssh. The binary inside the bundle does double duty: with no flags it opens the GUI, with `--headless` it runs a subcommand and exits.
 
-### Getting `imaculate` on your `$PATH`
+### Getting `sweep` on your `$PATH`
 
 Three ways, in order of friction:
 
-- **Homebrew install (recommended)** — the cask drops a wrapper at `$HOMEBREW_PREFIX/bin/imaculate` automatically. Just type `imaculate help` after `brew install --cask imaculate`.
-- **DMG install** — open iMaculate, click the menu bar icon (sparkle in the system bar), pick **Install Command-Line Tool…**. The action probes `/opt/homebrew/bin` first (no admin needed on Apple Silicon Homebrew); falls back to `/usr/local/bin` with an admin prompt otherwise. The same menu item flips to "Uninstall" once installed.
+- **Homebrew install (recommended)** — the cask drops a wrapper at `$HOMEBREW_PREFIX/bin/sweep` automatically. Just type `sweep help` after `brew install --cask sweep`.
+- **DMG install** — open Sweep, click the menu bar icon (sparkle in the system bar), pick **Install Command-Line Tool…**. The action probes `/opt/homebrew/bin` first (no admin needed on Apple Silicon Homebrew); falls back to `/usr/local/bin` with an admin prompt otherwise. The same menu item flips to "Uninstall" once installed.
 - **Manual** — paste this if you'd rather skip the GUI step:
   ```sh
-  sudo tee /usr/local/bin/imaculate >/dev/null <<'SH'
+  sudo tee /usr/local/bin/sweep >/dev/null <<'SH'
   #!/bin/sh
-  for app in "/Applications/iMaculate.app" "$HOME/Applications/iMaculate.app"; do
-    [ -x "$app/Contents/MacOS/iMaculate" ] && exec "$app/Contents/MacOS/iMaculate" --headless "$@"
+  for app in "/Applications/Sweep.app" "$HOME/Applications/Sweep.app"; do
+    [ -x "$app/Contents/MacOS/Sweep" ] && exec "$app/Contents/MacOS/Sweep" --headless "$@"
   done
-  echo "iMaculate.app not found" >&2; exit 127
+  echo "Sweep.app not found" >&2; exit 127
   SH
-  sudo chmod +x /usr/local/bin/imaculate
+  sudo chmod +x /usr/local/bin/sweep
   ```
 
-After install, `imaculate help` should print the full subcommand reference. (`/usr/bin` is SIP-protected on macOS; we install to `/usr/local/bin` or `/opt/homebrew/bin`, both of which are on the default `$PATH`.)
+After install, `sweep help` should print the full subcommand reference. (`/usr/bin` is SIP-protected on macOS; we install to `/usr/local/bin` or `/opt/homebrew/bin`, both of which are on the default `$PATH`.)
 
 ### Subcommand reference
 
@@ -174,7 +174,7 @@ After install, `imaculate help` should print the full subcommand reference. (`/u
 | `schedule set <off\|daily\|weekly\|monthly> [--light-scrub] [--threat-scan] [--update-defs]` | Configure the scheduled job. Negate any task with the `--no-…` form. |
 | `scheduled-job` | Run the configured schedule once — what launchd invokes. |
 | `agent status` | Whether the launchd agent plist is installed. |
-| `agent install` | Write `~/Library/LaunchAgents/com.imaculate.scheduler.plist` and bootstrap it via `launchctl bootstrap gui/$UID`. The plist runs `iMaculate --headless scheduled-job` at 03:30 local time on the configured cadence. |
+| `agent install` | Write `~/Library/LaunchAgents/dev.willmarch.sweep.scheduler.plist` and bootstrap it via `launchctl bootstrap gui/$UID`. The plist runs `Sweep --headless scheduled-job` at 03:30 local time on the configured cadence. |
 | `agent uninstall` | `bootout` + delete the plist. |
 | `launch-items list` / `remove <plist\|label>` | Inspect / disable launchd agents in `~/Library/LaunchAgents`, `/Library/LaunchAgents`, `/Library/LaunchDaemons`. Removed plists are archived to Trash so they're restorable. |
 | `history [limit]` | Print the most recent History entries (default 20). |
@@ -187,43 +187,43 @@ After install, `imaculate help` should print the full subcommand reference. (`/u
 **Reclaim user caches every night** (no GUI needed):
 
 ```sh
-imaculate schedule set daily --light-scrub --no-threat-scan --no-update-defs
-imaculate agent install
+sweep schedule set daily --light-scrub --no-threat-scan --no-update-defs
+sweep agent install
 ```
 
 **Heavier weekly job** with threat scan and definitions refresh:
 
 ```sh
-imaculate schedule set weekly --light-scrub --threat-scan --update-defs
-imaculate agent install
+sweep schedule set weekly --light-scrub --threat-scan --update-defs
+sweep agent install
 ```
 
 **Run the configured job once, right now:**
 
 ```sh
-imaculate scheduled-job
+sweep scheduled-job
 ```
 
-**Inspect what's about to happen** before scheduling: `imaculate schedule status`, `imaculate agent status`.
+**Inspect what's about to happen** before scheduling: `sweep schedule status`, `sweep agent status`.
 
 **Remove an app + every leftover** with one command:
 
 ```sh
-imaculate uninstall com.tinyspeck.slackmacgap
+sweep uninstall com.tinyspeck.slackmacgap
 # Note the restore id printed at the end. To put it back:
-imaculate restore <id>
+sweep restore <id>
 ```
 
 **Audit launch items** for adware:
 
 ```sh
-imaculate launch-items list   # `!` prefix flags suspicious entries
-imaculate launch-items remove com.adware.example.agent
+sweep launch-items list   # `!` prefix flags suspicious entries
+sweep launch-items remove com.adware.example.agent
 ```
 
 ### Logs
 
-Every headless / launchd-driven run appends to `~/Library/Application Support/iMaculate/logs/headless.log` and (when launched by the agent) `scheduler.out.log` / `scheduler.err.log` in the same dir. The menu bar's **Reveal Logs in Finder** opens that folder.
+Every headless / launchd-driven run appends to `~/Library/Application Support/Sweep/logs/headless.log` and (when launched by the agent) `scheduler.out.log` / `scheduler.err.log` in the same dir. The menu bar's **Reveal Logs in Finder** opens that folder.
 
 ---
 
@@ -239,8 +239,8 @@ Every headless / launchd-driven run appends to `~/Library/Application Support/iM
 ### One-shot rebuild
 
 ```bash
-git clone https://github.com/will-march/imaculate.git
-cd imaculate
+git clone https://github.com/will-march/sweep.git
+cd sweep
 flutter pub get
 flutter run -d macos
 ```
@@ -258,7 +258,7 @@ flutter run -d macos
 
 ```bash
 flutter build macos --release
-open build/macos/Build/Products/Release/iMaculate.app
+open build/macos/Build/Products/Release/Sweep.app
 ```
 
 The signed `.app` lands in `build/macos/Build/Products/Release/`. Drag it to `/Applications` to install.
@@ -312,7 +312,7 @@ Run `flutter analyze` and `flutter test` before opening a PR.
 
 ## Privacy
 
-iMaculate doesn't talk to the network. Ever. There's no analytics, no crash reporting, no auto-updater. The entire surface area is local disk + Finder + `osascript`.
+Sweep doesn't talk to the network. Ever. There's no analytics, no crash reporting, no auto-updater. The entire surface area is local disk + Finder + `osascript`.
 
 ---
 
@@ -322,4 +322,4 @@ MIT. See [`LICENSE`](LICENSE) once added — until then, treat the source as MIT
 
 ---
 
-<p align="center"><sub><em>iMaculate — keep your Mac clean, keep your data.</em></sub></p>
+<p align="center"><sub><em>Sweep — keep your Mac clean, keep your data.</em></sub></p>

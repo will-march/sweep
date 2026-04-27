@@ -70,7 +70,7 @@ class WalkthroughController extends ChangeNotifier {
       title: "What you'll reclaim",
       body:
           'After every scan this card shows total reclaimable bytes and '
-          'scan progress. Watch the number climb as iMaculate measures '
+          'scan progress. Watch the number climb as Sweep measures '
           'each cache.',
       anchor: WalkthroughAnchor.below,
     ),

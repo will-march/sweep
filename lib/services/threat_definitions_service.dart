@@ -65,7 +65,7 @@ class _EmptyThreatDefinitions implements ThreatDefinitions {
 }
 
 /// Manages the on-disk threat database at
-/// ~/Library/Application Support/iMaculate/security/threats.json.
+/// ~/Library/Application Support/Sweep/security/threats.json.
 ///
 /// **Source:** abuse.ch's MalwareBazaar publishes a daily CSV of
 /// recently-seen malware hashes. The "recent" CSV (the last day's
@@ -148,7 +148,7 @@ class ThreatDefinitionsService {
   Future<String> _httpGet(String url) async {
     final client = HttpClient();
     try {
-      client.userAgent = 'iMaculate/1.0 (+macOS open-source cleaner)';
+      client.userAgent = 'Sweep/1.0 (+macOS open-source cleaner)';
       final req = await client.getUrl(Uri.parse(url));
       final res = await req.close();
       if (res.statusCode != 200) {

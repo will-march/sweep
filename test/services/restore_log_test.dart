@@ -1,16 +1,16 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/models/restore_entry.dart';
-import 'package:iMaculate/services/archive_service.dart';
-import 'package:iMaculate/services/restore_log.dart';
+import 'package:sweep/models/restore_entry.dart';
+import 'package:sweep/services/archive_service.dart';
+import 'package:sweep/services/restore_log.dart';
 
 void main() {
   late Directory tmp;
   late RestoreLog log;
 
   setUp(() async {
-    tmp = await Directory.systemTemp.createTemp('imaculate_restore_log_');
+    tmp = await Directory.systemTemp.createTemp('sweep_restore_log_');
     log = RestoreLog(overridePath: '${tmp.path}/restore_log.json');
   });
 
@@ -24,7 +24,7 @@ void main() {
         label: label,
         kind: 'uninstall',
         timestamp: DateTime.utc(2026, 4, 27, 12),
-        archiveTrashPath: '/Users/x/.Trash/iMaculate-x-$id.zip',
+        archiveTrashPath: '/Users/x/.Trash/Sweep-x-$id.zip',
         items: const [
           ArchiveItem(
             originalPath: '/Applications/Foo.app',

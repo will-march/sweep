@@ -1,18 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/models/scan_schedule.dart';
-import 'package:iMaculate/services/launchd_agent_service.dart';
+import 'package:sweep/models/scan_schedule.dart';
+import 'package:sweep/services/launchd_agent_service.dart';
 
 void main() {
   late Directory tmp;
   late LaunchdAgentService service;
 
   setUp(() async {
-    tmp = await Directory.systemTemp.createTemp('imaculate_launchd_');
+    tmp = await Directory.systemTemp.createTemp('sweep_launchd_');
     service = LaunchdAgentService(
       overrideAgentDir: tmp.path,
-      overrideExecutable: '/Applications/iMaculate.app/Contents/MacOS/iMaculate',
+      overrideExecutable: '/Applications/Sweep.app/Contents/MacOS/Sweep',
       // Stub out launchctl + id so tests don't shell out.
       processRunner: (exe, args) async =>
           ProcessResult(0, 0, '1000', ''),
@@ -30,12 +30,12 @@ void main() {
   test('plist for daily contains StartCalendarInterval Hour=3 Minute=30',
       () async {
     final xml = service.buildPlist(
-      execPath: '/Applications/iMaculate.app/Contents/MacOS/iMaculate',
+      execPath: '/Applications/Sweep.app/Contents/MacOS/Sweep',
       schedule: const ScanSchedule(frequency: ScheduleFrequency.daily),
       logsDir: '/tmp/logs',
     );
     expect(xml, contains('<key>Label</key>'));
-    expect(xml, contains('com.imaculate.scheduler'));
+    expect(xml, contains('dev.willmarch.sweep.scheduler'));
     expect(xml, contains('--headless'));
     expect(xml, contains('scheduled-job'));
     expect(xml, contains('<key>Hour</key><integer>3</integer>'));
@@ -65,14 +65,14 @@ void main() {
   test('plist embeds the executable path the agent should call',
       () async {
     final xml = service.buildPlist(
-      execPath: '/Applications/iMaculate.app/Contents/MacOS/iMaculate',
+      execPath: '/Applications/Sweep.app/Contents/MacOS/Sweep',
       schedule: const ScanSchedule(frequency: ScheduleFrequency.daily),
       logsDir: '/tmp/logs',
     );
     expect(
       xml,
       contains(
-        '/Applications/iMaculate.app/Contents/MacOS/iMaculate',
+        '/Applications/Sweep.app/Contents/MacOS/Sweep',
       ),
     );
   });
@@ -85,7 +85,7 @@ void main() {
     expect(r.ok, isTrue);
     expect(await service.isInstalled(), isTrue);
     final xml = await File(service.plistPath).readAsString();
-    expect(xml, contains('com.imaculate.scheduler'));
+    expect(xml, contains('dev.willmarch.sweep.scheduler'));
   });
 
   test('install with frequency=off uninstalls instead', () async {

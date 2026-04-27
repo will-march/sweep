@@ -5,7 +5,7 @@ import '../models/clean_event.dart';
 import 'app_support_paths.dart';
 
 /// Reads and writes the cleaning history at
-/// ~/Library/Application Support/iMaculate/history.json.
+/// ~/Library/Application Support/Sweep/history.json.
 ///
 /// History is a flat JSON array of [CleanEvent] objects, newest-first.
 /// We cap at [maxEntries] so the file stays bounded; older events drop off.

@@ -6,7 +6,7 @@ import 'app.dart';
 import 'services/headless_runner.dart';
 
 /// Entry point. The same binary serves two roles:
-///   1. **GUI** — `runApp(IMaculateApp)`. The default.
+///   1. **GUI** — `runApp(SweepApp)`. The default.
 ///   2. **Headless** — when launched with `--headless <task>`, run the
 ///      task and exit. launchd uses this so scheduled cleans / scans
 ///      / definitions updates can fire even when nobody opened the
@@ -25,7 +25,7 @@ Future<void> main() async {
     final code = await HeadlessRunner().run(args);
     exit(code);
   }
-  runApp(const IMaculateApp());
+  runApp(const SweepApp());
 }
 
 Future<List<String>> _readOwnArgs() async {

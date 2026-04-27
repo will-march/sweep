@@ -1,15 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/models/clean_event.dart';
-import 'package:iMaculate/services/history_service.dart';
+import 'package:sweep/models/clean_event.dart';
+import 'package:sweep/services/history_service.dart';
 
 void main() {
   late Directory tmp;
   late HistoryService service;
 
   setUp(() async {
-    tmp = await Directory.systemTemp.createTemp('imaculate_history_');
+    tmp = await Directory.systemTemp.createTemp('sweep_history_');
     service = HistoryService(overridePath: '${tmp.path}/history.json');
   });
 

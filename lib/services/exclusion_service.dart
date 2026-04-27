@@ -5,7 +5,7 @@ import 'app_support_paths.dart';
 
 /// User-editable list of paths the cleaner / scanner must never touch.
 /// Persisted as JSON at
-/// ~/Library/Application Support/iMaculate/exclusions.json.
+/// ~/Library/Application Support/Sweep/exclusions.json.
 ///
 /// Matching is *prefix-based*: an exclusion of `~/Library/Caches/Foo`
 /// also covers `~/Library/Caches/Foo/inner.bin`. This matches user

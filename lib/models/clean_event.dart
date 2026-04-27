@@ -1,5 +1,5 @@
 /// One past cleaning operation, persisted under
-/// ~/Library/Application Support/iMaculate/history.json.
+/// ~/Library/Application Support/Sweep/history.json.
 class CleanEvent {
   /// Wall-clock time the clean finished.
   final DateTime timestamp;

@@ -19,7 +19,7 @@ class _Item<T> {
 /// are good. Items with [value] <= 0 are dropped.
 ///
 /// Ported from the JS reference in the Aurora design bundle's
-/// `iMaculate Treemap.html` so behaviour matches the prototype.
+/// `Sweep Treemap.html` so behaviour matches the prototype.
 List<SquarifiedTile<T>> squarify<T>({
   required List<({double value, T ref})> items,
   required Rect bounds,

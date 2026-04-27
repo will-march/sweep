@@ -1,4 +1,4 @@
-// The previous incarnation of this test pumped the full IMaculateApp,
+// The previous incarnation of this test pumped the full SweepApp,
 // which fires Process.run via PermissionService and DiskStatsService at
 // boot. Those processes leave dangling timers that flutter_test's
 // FakeAsync flags as a failure. Booting the whole app from a unit test

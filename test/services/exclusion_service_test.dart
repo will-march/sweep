@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/services/exclusion_service.dart';
+import 'package:sweep/services/exclusion_service.dart';
 
 void main() {
   late Directory tmp;
   late ExclusionService service;
 
   setUp(() async {
-    tmp = await Directory.systemTemp.createTemp('imaculate_excl_');
+    tmp = await Directory.systemTemp.createTemp('sweep_excl_');
     service = ExclusionService(overridePath: '${tmp.path}/exclusions.json');
   });
 

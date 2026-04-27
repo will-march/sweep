@@ -2,7 +2,7 @@ import 'dart:math' as math;
 import 'dart:ui';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/utils/squarify.dart';
+import 'package:sweep/utils/squarify.dart';
 
 ({double value, String ref}) item(double v, String r) =>
     (value: v, ref: r);

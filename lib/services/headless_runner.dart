@@ -22,9 +22,9 @@ import 'threat_definitions_service.dart';
 import 'threat_scanner.dart';
 
 /// Runs maintenance tasks without spinning up Flutter / the GUI. The
-/// binary is the same — `Contents/MacOS/iMaculate` — but invoked with
+/// binary is the same — `Contents/MacOS/Sweep` — but invoked with
 /// `--headless <subcommand …>` so launchd, cron, ssh, or the user
-/// themselves can drive every iMaculate behaviour from a terminal.
+/// themselves can drive every Sweep behaviour from a terminal.
 ///
 /// Subcommand surface mirrors the GUI 1:1 — see `_printHelp()` for the
 /// full list. Every mutation that the GUI logs to History or the
@@ -635,9 +635,9 @@ class HeadlessRunner {
   }
 
   void _printHelp() {
-    stdout.writeln('iMaculate headless / CLI');
+    stdout.writeln('Sweep headless / CLI');
     stdout.writeln('');
-    stdout.writeln('Usage:  iMaculate --headless <subcommand> [args]');
+    stdout.writeln('Usage:  Sweep --headless <subcommand> [args]');
     stdout.writeln('');
     stdout.writeln('Cleaning modes:');
     stdout.writeln('  light-scrub                 Empty user caches '
@@ -677,7 +677,7 @@ class HeadlessRunner {
     stdout.writeln('launchd agent:');
     stdout.writeln('  agent status');
     stdout.writeln('  agent install               Write + bootstrap '
-        '~/Library/LaunchAgents/com.imaculate.scheduler.plist');
+        '~/Library/LaunchAgents/dev.willmarch.sweep.scheduler.plist');
     stdout.writeln('  agent uninstall             Bootout + delete the plist');
     stdout.writeln('');
     stdout.writeln('Launch items:');

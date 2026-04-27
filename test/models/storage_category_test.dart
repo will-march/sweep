@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/models/storage_category.dart';
+import 'package:sweep/models/storage_category.dart';
 
 void main() {
   final home = Platform.environment['HOME'] ?? '/Users/test';

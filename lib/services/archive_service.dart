@@ -55,7 +55,7 @@ class ArchiveService {
     required String archivePath,
   }) async {
     final tmp = await Directory.systemTemp
-        .createTemp('imaculate-archive-staging-');
+        .createTemp('sweep-archive-staging-');
     try {
       final itemsDir = Directory('${tmp.path}/items');
       await itemsDir.create(recursive: true);

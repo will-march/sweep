@@ -120,7 +120,7 @@ class ArchiveTrashService {
       ]);
     }
     final staging =
-        await Directory.systemTemp.createTemp('imaculate-restore-');
+        await Directory.systemTemp.createTemp('sweep-restore-');
     try {
       await _archive.extract(
         archivePath: entry.archiveTrashPath,
@@ -228,7 +228,7 @@ class ArchiveTrashService {
     final clipped = safeLabel.length > 60
         ? safeLabel.substring(0, 60)
         : safeLabel;
-    return 'iMaculate-$kind-$clipped-$id.zip';
+    return 'Sweep-$kind-$clipped-$id.zip';
   }
 
   String _parent(String path) {

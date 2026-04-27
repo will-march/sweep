@@ -7,7 +7,7 @@ import 'app_support_paths.dart';
 /// `.app` bundles store their icon as a multi-resolution `.icns` file
 /// inside `Contents/Resources/`. We use the system `sips` tool to
 /// convert one of those into a fixed-size PNG and cache it under
-/// `~/Library/Application Support/iMaculate/icon-cache/` keyed by
+/// `~/Library/Application Support/Sweep/icon-cache/` keyed by
 /// bundle ID (or bundle path hash if there's no ID). Subsequent reads
 /// hit the cache instead of re-running sips.
 class IconExtractor {

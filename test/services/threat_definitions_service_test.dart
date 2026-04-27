@@ -2,14 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/services/threat_definitions_service.dart';
+import 'package:sweep/services/threat_definitions_service.dart';
 
 void main() {
   late Directory tmp;
   late ThreatDefinitionsService service;
 
   setUp(() async {
-    tmp = await Directory.systemTemp.createTemp('imaculate_threats_');
+    tmp = await Directory.systemTemp.createTemp('sweep_threats_');
     service = ThreatDefinitionsService(overrideDir: tmp.path);
   });
 

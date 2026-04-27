@@ -124,7 +124,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
         content: const Text(
           "This clears the markers that remember you've seen the splash, "
           "the intro tour and the live walkthrough. The next time you "
-          "launch iMaculate, all three will fire from the start as if "
+          "launch Sweep, all three will fire from the start as if "
           "the app was freshly installed.",
         ),
         actions: [
@@ -143,7 +143,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         content: Text(
-          'Tutorial reset. Quit and relaunch iMaculate to see it.',
+          'Tutorial reset. Quit and relaunch Sweep to see it.',
         ),
         duration: Duration(seconds: 4),
       ),

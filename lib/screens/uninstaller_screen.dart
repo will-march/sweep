@@ -196,7 +196,7 @@ class _UninstallerScreenState extends State<UninstallerScreen> {
                     const SizedBox(height: 4),
                     Text(
                       'Drag-to-Trash leaves caches, preferences, and '
-                      'containers behind. iMaculate trashes the bundle '
+                      'containers behind. Sweep trashes the bundle '
                       'and every file matching the bundle ID.',
                       style: TextStyle(
                         fontSize: 12,

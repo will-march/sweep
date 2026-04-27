@@ -1,8 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/models/directory_info.dart';
-import 'package:iMaculate/widgets/treemap_view.dart';
+import 'package:sweep/models/directory_info.dart';
+import 'package:sweep/widgets/treemap_view.dart';
 
 DirectoryInfo dir(String name, int sizeMb) => DirectoryInfo(
       path: '/tmp/$name',

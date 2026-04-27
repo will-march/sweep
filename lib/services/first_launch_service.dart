@@ -6,27 +6,27 @@ import 'dart:io';
 ///  - walkthrough_seen  → user finished the live coachmark walkthrough
 ///
 /// We persist marker files under
-/// ~/Library/Application Support/iMaculate/ so we don't depend on
+/// ~/Library/Application Support/Sweep/ so we don't depend on
 /// shared_preferences for three booleans.
 ///
-/// **Guarantee:** on a Mac that has never run iMaculate, none of those
+/// **Guarantee:** on a Mac that has never run Sweep, none of those
 /// files exist, [needsOnboarding] returns true, and the launch gate in
 /// `app.dart` fires the splash → tour → walkthrough flow.
 ///
 /// **Robustness:**
 ///   • Writes are atomic (tmp file + rename) so a power-cut mid-write
 ///     doesn't leave a half-written marker that lies "seen=true".
-///   • [maybeReset] honours the `IMACULATE_RESET_ONBOARDING` env var so
+///   • [maybeReset] honours the `SWEEP_RESET_ONBOARDING` env var so
 ///     QA / devs can force the flow to re-fire by relaunching with that
 ///     variable set.
 class FirstLaunchService {
-  static const _dirName = 'iMaculate';
+  static const _dirName = 'Sweep';
   static const _introMarker = 'intro_seen';
   static const _tourMarker = 'tour_seen';
   static const _walkthroughMarker = 'walkthrough_seen';
 
   /// Override the marker directory in tests; falls back to the real
-  /// `~/Library/Application Support/iMaculate/` when null.
+  /// `~/Library/Application Support/Sweep/` when null.
   final String? overrideDir;
 
   /// In tests we hand in a synthetic environment instead of relying on
@@ -83,12 +83,12 @@ class FirstLaunchService {
     }
   }
 
-  /// If `IMACULATE_RESET_ONBOARDING=1` is set in the process environment
-  /// (handy for `IMACULATE_RESET_ONBOARDING=1 open path/to/app`), wipe
+  /// If `SWEEP_RESET_ONBOARDING=1` is set in the process environment
+  /// (handy for `SWEEP_RESET_ONBOARDING=1 open path/to/app`), wipe
   /// every marker before the launch gate reads them. Returns true when
   /// a reset actually happened.
   Future<bool> maybeReset() async {
-    final raw = environment['IMACULATE_RESET_ONBOARDING'];
+    final raw = environment['SWEEP_RESET_ONBOARDING'];
     if (raw == null) return false;
     final on = raw == '1' || raw.toLowerCase() == 'true';
     if (!on) return false;

@@ -1,9 +1,9 @@
 import Cocoa
 import FlutterMacOS
 
-/// Owns the iMaculate NSStatusItem in the macOS menu bar.
+/// Owns the Sweep NSStatusItem in the macOS menu bar.
 ///
-/// Each menu item invokes a method on the Dart-side `imaculate.menubar`
+/// Each menu item invokes a method on the Dart-side `sweep.menubar`
 /// channel; the Dart handler (lib/services/menu_bar_channel.dart) maps
 /// those into the same calls the GUI buttons make. The menu bar stays
 /// available even when the main window is hidden, giving users a
@@ -34,7 +34,7 @@ final class MenuBarController: NSObject {
     if #available(macOS 11.0, *),
        let img = NSImage(
         systemSymbolName: "sparkles",
-        accessibilityDescription: "iMaculate"
+        accessibilityDescription: "Sweep"
        )
     {
       button.image = img
@@ -42,7 +42,7 @@ final class MenuBarController: NSObject {
     } else {
       button.title = "✦"
     }
-    button.toolTip = "iMaculate"
+    button.toolTip = "Sweep"
   }
 
   private func configureMenu() {
@@ -50,7 +50,7 @@ final class MenuBarController: NSObject {
     menu.autoenablesItems = false
     menu.addItem(
       makeItem(
-        title: "Open iMaculate",
+        title: "Open Sweep",
         action: #selector(openApp),
         key: "o"
       )
@@ -101,7 +101,7 @@ final class MenuBarController: NSObject {
     )
     menu.addItem(.separator())
     let quit = NSMenuItem(
-      title: "Quit iMaculate",
+      title: "Quit Sweep",
       action: #selector(NSApplication.terminate(_:)),
       keyEquivalent: "q"
     )
@@ -149,7 +149,7 @@ final class MenuBarController: NSObject {
     let home =
       ProcessInfo.processInfo.environment["HOME"] ?? NSHomeDirectory()
     let logsPath =
-      "\(home)/Library/Application Support/iMaculate/logs"
+      "\(home)/Library/Application Support/Sweep/logs"
     NSWorkspace.shared.selectFile(
       nil,
       inFileViewerRootedAtPath: logsPath

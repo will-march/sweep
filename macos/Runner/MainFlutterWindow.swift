@@ -26,7 +26,7 @@ class MainFlutterWindow: NSWindow {
     // user picks an item from the menubar menu. Dart side listens via
     // services/menu_bar_channel.dart.
     let channel = FlutterMethodChannel(
-      name: "imaculate.menubar",
+      name: "sweep.menubar",
       binaryMessenger: flutterViewController.engine.binaryMessenger
     )
     menuBarController = MenuBarController(channel: channel, window: self)

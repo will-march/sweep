@@ -5,11 +5,11 @@ import '../models/scan_schedule.dart';
 import 'app_support_paths.dart';
 
 /// Persists [ScanSchedule] under
-/// ~/Library/Application Support/iMaculate/schedule.json.
+/// ~/Library/Application Support/Sweep/schedule.json.
 ///
 /// True background scheduling on macOS belongs in a launchd agent —
 /// we'd register one via SMAppService for "wake up the cleaner once a
-/// week even when iMaculate is closed". Until that helper ships, this
+/// week even when Sweep is closed". Until that helper ships, this
 /// service is the source of truth and the in-app runner polls it while
 /// the app is open.
 class ScheduleService {

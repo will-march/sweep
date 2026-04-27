@@ -4,15 +4,15 @@ Guide for Claude Code (and other agents) working in this repository. Read this o
 
 ## What this is
 
-iMaculate is a **macOS-only Flutter desktop app** that cleans system and developer caches. It is a single-binary GUI tool — no server, no networking, no telemetry. Everything happens on local disk via Dart APIs and `osascript`.
+Sweep is a **macOS-only Flutter desktop app** that cleans system and developer caches. It is a single-binary GUI tool — no server, no networking, no telemetry. Everything happens on local disk via Dart APIs and `osascript`.
 
-Entry point: `lib/main.dart` → `IMaculateApp` (`lib/app.dart`) → either `SplashScreen` or `HomeShell`.
+Entry point: `lib/main.dart` → `SweepApp` (`lib/app.dart`) → either `SplashScreen` or `HomeShell`.
 
 ## Project layout
 
 ```
 lib/
-├── main.dart                 # runApp(IMaculateApp())
+├── main.dart                 # runApp(SweepApp())
 ├── app.dart                  # MaterialApp + first-launch gate
 ├── data/
 │   └── cleaning_targets.dart # Source of truth for what each mode cleans

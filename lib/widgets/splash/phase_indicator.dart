@@ -116,7 +116,7 @@ class ChromeFooter extends StatelessWidget {
       right: 0,
       child: Center(
         child: Text(
-          'IMACULATE · v1.0 · MACOS 14+',
+          'SWEEP · v1.0 · MACOS 14+',
           style: TextStyle(
             fontFamily: 'SF Mono',
             fontFamilyFallback: ['Menlo', 'monospace'],

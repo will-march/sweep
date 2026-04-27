@@ -1,15 +1,15 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/models/scan_schedule.dart';
-import 'package:iMaculate/services/schedule_service.dart';
+import 'package:sweep/models/scan_schedule.dart';
+import 'package:sweep/services/schedule_service.dart';
 
 void main() {
   late Directory tmp;
   late ScheduleService service;
 
   setUp(() async {
-    tmp = await Directory.systemTemp.createTemp('imaculate_sched_');
+    tmp = await Directory.systemTemp.createTemp('sweep_sched_');
     service = ScheduleService(overridePath: '${tmp.path}/schedule.json');
   });
 

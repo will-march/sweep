@@ -1,12 +1,12 @@
 import 'dart:io';
 
-/// Helpers for ~/Library/Application Support/iMaculate/ — the canonical
+/// Helpers for ~/Library/Application Support/Sweep/ — the canonical
 /// location for the app's persisted state (history, exclusions, schedule).
 /// Centralised so every service writes under the same root.
 class AppSupportPaths {
   AppSupportPaths._();
 
-  static const _dirName = 'iMaculate';
+  static const _dirName = 'Sweep';
 
   static String get root {
     final home = Platform.environment['HOME'] ?? '';

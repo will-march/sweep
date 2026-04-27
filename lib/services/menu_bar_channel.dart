@@ -12,7 +12,7 @@ import 'history_service.dart';
 import 'schedule_service.dart';
 import 'threat_definitions_service.dart';
 
-/// Dart-side handler for the `imaculate.menubar` MethodChannel.
+/// Dart-side handler for the `sweep.menubar` MethodChannel.
 ///
 /// The Swift NSStatusItem in `MainFlutterWindow` invokes Dart-side
 /// methods on this channel when the user picks an item from the menu
@@ -23,7 +23,7 @@ import 'threat_definitions_service.dart';
 /// as the rest of the Flutter app, so all our existing services work
 /// unchanged. A separate `--headless` binary covers the launchd path.
 class MenuBarChannel {
-  static const _channelName = 'imaculate.menubar';
+  static const _channelName = 'sweep.menubar';
 
   /// Global ScaffoldMessenger key so menu-bar handlers (which run
   /// outside any BuildContext) can show snackbars in the main window.
@@ -31,7 +31,7 @@ class MenuBarChannel {
   static final messengerKey = GlobalKey<ScaffoldMessengerState>();
 
   /// Bind the channel handler. Optional [onOpenApp] is fired when the
-  /// user picks "Open iMaculate" so the host can also do an in-app
+  /// user picks "Open Sweep" so the host can also do an in-app
   /// nav (e.g. focus the cleaner screen).
   static void install({void Function()? onOpenApp}) {
     const channel = MethodChannel(_channelName);

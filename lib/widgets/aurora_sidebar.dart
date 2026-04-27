@@ -198,7 +198,7 @@ class _Brand extends StatelessWidget {
           ),
           const SizedBox(width: AuroraTokens.sp2),
           Text(
-            'iMaculate',
+            'Sweep',
             style: TextStyle(
               fontSize: 15,
               fontWeight: FontWeight.w700,

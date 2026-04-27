@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/utils/byte_formatter.dart';
+import 'package:sweep/utils/byte_formatter.dart';
 
 void main() {
   group('formatBytes', () {

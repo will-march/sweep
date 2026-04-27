@@ -16,7 +16,7 @@ import '../theme/tokens.dart';
 import '../utils/byte_formatter.dart';
 import '../widgets/treemap_view.dart';
 
-// Style constants ported 1:1 from `iMaculate Treemap.html` (Aurora design
+// Style constants ported 1:1 from `Sweep Treemap.html` (Aurora design
 // bundle). Names mirror the CSS variables / inline values so the design and
 // the code can be diffed by eye.
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-/// The iMaculate brand mark — a 4-point sparkle with two smaller accent stars,
+/// The Sweep brand mark — a 4-point sparkle with two smaller accent stars,
 /// rendered into a 100×100 logical canvas and scaled to [size].
 class SparkleMark extends StatelessWidget {
   final double size;

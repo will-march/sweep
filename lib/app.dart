@@ -14,18 +14,18 @@ import 'theme/app_theme.dart';
 ///   2. Tour        — the multi-page guided product tour.
 ///   3. Walkthrough — live coachmark overlay on top of HomeShell.
 ///   4. HomeShell   — the regular app.
-/// Each step writes a marker to ~/Library/Application Support/iMaculate
+/// Each step writes a marker to ~/Library/Application Support/Sweep
 /// so subsequent launches skip the gate.
 enum _LaunchStage { unknown, splash, tour, walkthrough, home }
 
-class IMaculateApp extends StatefulWidget {
-  const IMaculateApp({super.key});
+class SweepApp extends StatefulWidget {
+  const SweepApp({super.key});
 
   @override
-  State<IMaculateApp> createState() => _IMaculateAppState();
+  State<SweepApp> createState() => _SweepAppState();
 }
 
-class _IMaculateAppState extends State<IMaculateApp> {
+class _SweepAppState extends State<SweepApp> {
   final _firstLaunch = FirstLaunchService();
   _LaunchStage _stage = _LaunchStage.unknown;
 
@@ -41,7 +41,7 @@ class _IMaculateAppState extends State<IMaculateApp> {
 
   Future<void> _resolveStage() async {
     // Wipe markers if the user / QA launched with
-    // IMACULATE_RESET_ONBOARDING=1. Done before reading any state so
+    // SWEEP_RESET_ONBOARDING=1. Done before reading any state so
     // the gate behaves identically to a brand-new install.
     await _firstLaunch.maybeReset();
     final intro = await _firstLaunch.hasSeenIntro();
@@ -74,7 +74,7 @@ class _IMaculateAppState extends State<IMaculateApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'iMaculate',
+      title: 'Sweep',
       debugShowCheckedModeBanner: false,
       // Global messenger so handlers outside the widget tree (the menu
       // bar's MethodChannel) can showSnackBar.

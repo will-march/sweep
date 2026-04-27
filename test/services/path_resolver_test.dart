@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/services/path_resolver.dart';
+import 'package:sweep/services/path_resolver.dart';
 
 void main() {
   // Pin to whatever the test process actually has — that's what the resolver

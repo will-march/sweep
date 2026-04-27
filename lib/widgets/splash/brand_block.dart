@@ -9,7 +9,7 @@ const _seed = Color(0xFF5B43D6);
 const _seedLight = Color(0xFF8E7DF0);
 const _highlight = Color(0xFFE3DDFF);
 
-/// Centre brand: mark blooms with overshoot, idle bob, "iMaculate" wordmark
+/// Centre brand: mark blooms with overshoot, idle bob, "Sweep" wordmark
 /// types in (gradient on "Maculate"), tagline fades. Visible 0.6s → 3.0s.
 class BrandBlock extends StatelessWidget {
   final double t;
@@ -188,7 +188,7 @@ class BrandSmall extends StatelessWidget {
               const SparkleMark(size: 44),
               const SizedBox(width: 14),
               const Text(
-                'iMaculate',
+                'Sweep',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.w700,

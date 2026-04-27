@@ -5,11 +5,11 @@ import '../models/restore_entry.dart';
 import 'app_support_paths.dart';
 
 /// Persists the catalog of recoverable archived deletions at
-/// ~/Library/Application Support/iMaculate/restore_log.json.
+/// ~/Library/Application Support/Sweep/restore_log.json.
 ///
 /// Schema is just a JSON array of [RestoreEntry], newest first. Capped
 /// at [maxEntries] so the file stays bounded — once an entry rolls
-/// off, the archive is still in Trash but iMaculate won't surface a
+/// off, the archive is still in Trash but Sweep won't surface a
 /// Restore button for it (user can still drag it out of Finder).
 class RestoreLog {
   static const fileName = 'restore_log.json';

@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:iMaculate/services/first_launch_service.dart';
+import 'package:sweep/services/first_launch_service.dart';
 
 void main() {
   late Directory tmp;
   late FirstLaunchService service;
 
   setUp(() async {
-    tmp = await Directory.systemTemp.createTemp('imaculate_first_');
+    tmp = await Directory.systemTemp.createTemp('sweep_first_');
     service = FirstLaunchService(overrideDir: tmp.path, environment: const {});
   });
 
@@ -69,7 +69,7 @@ void main() {
     });
   });
 
-  group('IMACULATE_RESET_ONBOARDING env var', () {
+  group('SWEEP_RESET_ONBOARDING env var', () {
     test('maybeReset is a no-op when the var is unset', () async {
       await service.markIntroSeen();
       final didReset = await service.maybeReset();
@@ -80,7 +80,7 @@ void main() {
     test('maybeReset wipes markers when the var is "1"', () async {
       final reset = FirstLaunchService(
         overrideDir: tmp.path,
-        environment: const {'IMACULATE_RESET_ONBOARDING': '1'},
+        environment: const {'SWEEP_RESET_ONBOARDING': '1'},
       );
       await reset.markIntroSeen();
       await reset.markTourSeen();
@@ -93,7 +93,7 @@ void main() {
     test('maybeReset accepts case-insensitive "true"', () async {
       final reset = FirstLaunchService(
         overrideDir: tmp.path,
-        environment: const {'IMACULATE_RESET_ONBOARDING': 'TRUE'},
+        environment: const {'SWEEP_RESET_ONBOARDING': 'TRUE'},
       );
       await reset.markIntroSeen();
       expect(await reset.maybeReset(), isTrue);
@@ -103,7 +103,7 @@ void main() {
     test('maybeReset ignores other values like "0"', () async {
       final reset = FirstLaunchService(
         overrideDir: tmp.path,
-        environment: const {'IMACULATE_RESET_ONBOARDING': '0'},
+        environment: const {'SWEEP_RESET_ONBOARDING': '0'},
       );
       await reset.markIntroSeen();
       expect(await reset.maybeReset(), isFalse);
