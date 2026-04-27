@@ -1,0 +1,97 @@
+import 'package:flutter/material.dart';
+
+import '../models/cleaning_level.dart';
+import '../models/nav_selection.dart';
+import '../services/permission_service.dart';
+import '../widgets/aurora_app_bar.dart';
+import '../widgets/aurora_sidebar.dart';
+import 'cleaner_screen.dart';
+import 'tree_map_screen.dart';
+
+class HomeShell extends StatefulWidget {
+  const HomeShell({super.key});
+
+  @override
+  State<HomeShell> createState() => _HomeShellState();
+}
+
+class _HomeShellState extends State<HomeShell> {
+  NavSelection _selection = const CleaningNav(CleaningLevel.lightScrub);
+  bool _privileged = false;
+  final _permission = PermissionService();
+
+  @override
+  void initState() {
+    super.initState();
+    _askForPermission();
+  }
+
+  Future<void> _askForPermission() async {
+    final ok = await _permission.requestRoot();
+    if (!mounted) return;
+    if (ok) setState(() => _privileged = true);
+  }
+
+  Widget _content() {
+    switch (_selection) {
+      case CleaningNav(level: final l):
+        return CleanerScreen(level: l, privileged: _privileged);
+      case UsageNav(view: UsageView.treeMap):
+        return TreeMapScreen(privileged: _privileged);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Scaffold(
+      backgroundColor: scheme.surface,
+      body: Stack(
+        children: [
+          // Ambient brand-purple radial wash behind the entire app body.
+          // Subtle in light mode (so cards stay legible) and slightly
+          // stronger in dark mode where it reads as atmosphere.
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: RadialGradient(
+                    center: const Alignment(-0.6, -0.9),
+                    radius: 1.4,
+                    colors: [
+                      scheme.primary.withValues(alpha: dark ? 0.10 : 0.06),
+                      scheme.surface.withValues(alpha: 0.0),
+                    ],
+                    stops: const [0.0, 0.7],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              AuroraSidebar(
+                selection: _selection,
+                onSelect: (s) => setState(() => _selection = s),
+              ),
+              Expanded(
+                child: Column(
+                  children: [
+                    AuroraAppBar(
+                      pageTitle: _selection.pageTitle,
+                      privileged: _privileged,
+                      onRequestRoot: _privileged ? null : _askForPermission,
+                    ),
+                    Expanded(child: _content()),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

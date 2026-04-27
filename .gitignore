@@ -1,0 +1,71 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+
+# Editor / IDE
+*.iml
+*.ipr
+*.iws
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.history/
+.atom/
+
+# Claude / agent local state
+.claude/settings.local.json
+.claude/cache/
+.claude/tmp/
+
+# Misc artifacts
+*.class
+*.log
+*.pyc
+.svn/
+.swiftpm/
+migrate_working_dir/
+.build/
+.buildlog/
+
+# Flutter / Dart / Pub
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+/build/
+/coverage/
+*.lock.bak
+
+# Symbolication / obfuscation
+app.*.symbols
+app.*.map.json
+
+# Generated screenshots/gifs scratch (keep curated ones in docs/)
+docs/screenshots/_scratch/
+docs/gifs/_scratch/
+*.tmp.png
+*.tmp.gif
+
+# macOS Xcode build leftovers
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/.symlinks/
+macos/Flutter/Flutter.framework
+macos/Flutter/Flutter.podspec
+macos/Runner/GeneratedPluginRegistrant.swift
+
+# Android Studio leftovers (in case targets get added later)
+/android/app/debug
+/android/app/profile
+/android/app/release
