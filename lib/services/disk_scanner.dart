@@ -41,10 +41,26 @@ class DiskScanner {
   /// Maximum number of immediate children to keep in the result.
   final int topN;
 
-  DiskScanner({this.topN = 200});
+  /// Optional pre-loaded set of paths to skip during the scan. Children
+  /// matching any prefix are dropped before measurement.
+  final Set<String> excludedPaths;
+
+  DiskScanner({this.topN = 200, this.excludedPaths = const {}});
+
+  bool _isExcluded(String p) {
+    if (excludedPaths.isEmpty) return false;
+    for (final ex in excludedPaths) {
+      if (p == ex) return true;
+      if (p.startsWith('$ex/')) return true;
+    }
+    return false;
+  }
 
   Stream<ScanProgress> scan(String basePath) async* {
-    final children = await _listChildren(basePath);
+    var children = await _listChildren(basePath);
+    if (excludedPaths.isNotEmpty) {
+      children = children.where((c) => !_isExcluded(c.path)).toList();
+    }
 
     final results = <DirectoryInfo>[];
 

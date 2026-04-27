@@ -8,6 +8,17 @@ extension UsageViewInfo on UsageView {
       };
 }
 
+enum ToolView { history, exclusions, schedule, uninstaller }
+
+extension ToolViewInfo on ToolView {
+  String get title => switch (this) {
+        ToolView.history => 'History',
+        ToolView.exclusions => 'Exclusions',
+        ToolView.schedule => 'Schedule',
+        ToolView.uninstaller => 'Uninstaller',
+      };
+}
+
 sealed class NavSelection {
   const NavSelection();
   String get pageTitle;
@@ -23,6 +34,13 @@ class CleaningNav extends NavSelection {
 class UsageNav extends NavSelection {
   final UsageView view;
   const UsageNav(this.view);
+  @override
+  String get pageTitle => view.title;
+}
+
+class ToolNav extends NavSelection {
+  final ToolView view;
+  const ToolNav(this.view);
   @override
   String get pageTitle => view.title;
 }

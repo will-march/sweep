@@ -78,6 +78,44 @@ class AuroraSidebar extends StatelessWidget {
                           (selection as UsageNav).view == UsageView.treeMap,
                       onTap: () => onSelect(const UsageNav(UsageView.treeMap)),
                     ),
+                    const SizedBox(height: AuroraTokens.sp4),
+                    const _SectionHeader('Tools'),
+                    _NavRow(
+                      icon: CupertinoIcons.clock_fill,
+                      label: 'History',
+                      accent: scheme.primary,
+                      active: selection is ToolNav &&
+                          (selection as ToolNav).view == ToolView.history,
+                      onTap: () =>
+                          onSelect(const ToolNav(ToolView.history)),
+                    ),
+                    _NavRow(
+                      icon: CupertinoIcons.shield_fill,
+                      label: 'Exclusions',
+                      accent: scheme.primary,
+                      active: selection is ToolNav &&
+                          (selection as ToolNav).view == ToolView.exclusions,
+                      onTap: () =>
+                          onSelect(const ToolNav(ToolView.exclusions)),
+                    ),
+                    _NavRow(
+                      icon: CupertinoIcons.calendar,
+                      label: 'Schedule',
+                      accent: scheme.primary,
+                      active: selection is ToolNav &&
+                          (selection as ToolNav).view == ToolView.schedule,
+                      onTap: () =>
+                          onSelect(const ToolNav(ToolView.schedule)),
+                    ),
+                    _NavRow(
+                      icon: CupertinoIcons.app_badge_fill,
+                      label: 'Uninstaller',
+                      accent: scheme.primary,
+                      active: selection is ToolNav &&
+                          (selection as ToolNav).view == ToolView.uninstaller,
+                      onTap: () =>
+                          onSelect(const ToolNav(ToolView.uninstaller)),
+                    ),
                   ],
                 ),
               ),

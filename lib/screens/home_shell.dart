@@ -6,7 +6,11 @@ import '../services/permission_service.dart';
 import '../widgets/aurora_app_bar.dart';
 import '../widgets/aurora_sidebar.dart';
 import 'cleaner_screen.dart';
+import 'exclusions_screen.dart';
+import 'history_screen.dart';
+import 'schedule_screen.dart';
 import 'tree_map_screen.dart';
+import 'uninstaller_screen.dart';
 
 class HomeShell extends StatefulWidget {
   const HomeShell({super.key});
@@ -38,6 +42,14 @@ class _HomeShellState extends State<HomeShell> {
         return CleanerScreen(level: l, privileged: _privileged);
       case UsageNav(view: UsageView.treeMap):
         return TreeMapScreen(privileged: _privileged);
+      case ToolNav(view: ToolView.history):
+        return const HistoryScreen();
+      case ToolNav(view: ToolView.exclusions):
+        return const ExclusionsScreen();
+      case ToolNav(view: ToolView.schedule):
+        return ScheduleScreen(privileged: _privileged);
+      case ToolNav(view: ToolView.uninstaller):
+        return const UninstallerScreen();
     }
   }
 

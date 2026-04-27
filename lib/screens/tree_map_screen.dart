@@ -8,6 +8,7 @@ import '../models/directory_info.dart';
 import '../models/storage_category.dart';
 import '../services/disk_scanner.dart';
 import '../services/disk_stats_service.dart';
+import '../services/exclusion_service.dart';
 import '../services/trash_service.dart';
 import '../theme/tokens.dart';
 import '../utils/byte_formatter.dart';
@@ -51,9 +52,10 @@ class TreeMapScreen extends StatefulWidget {
 }
 
 class _TreeMapScreenState extends State<TreeMapScreen> {
-  final _scanner = DiskScanner();
+  DiskScanner _scanner = DiskScanner();
   final _trash = TrashService();
   final _diskStats = DiskStatsService();
+  final _exclusions = ExclusionService();
 
   late final List<String> _stack = [Platform.environment['HOME'] ?? '/'];
 
@@ -84,7 +86,7 @@ class _TreeMapScreenState extends State<TreeMapScreen> {
 
   String get _currentPath => _stack.last;
 
-  void _scan() {
+  void _scan() async {
     _sub?.cancel();
     setState(() {
       _scanning = true;
@@ -94,6 +96,11 @@ class _TreeMapScreenState extends State<TreeMapScreen> {
       _entries = const [];
       _focused = null;
     });
+    // Refresh excluded set on every scan so user edits in the
+    // Exclusions screen take effect on the next rescan without app
+    // restart.
+    final excluded = (await _exclusions.readAll()).toSet();
+    _scanner = DiskScanner(excludedPaths: excluded);
     _sub = _scanner.scan(_currentPath).listen((p) {
       if (!mounted) return;
       setState(() {

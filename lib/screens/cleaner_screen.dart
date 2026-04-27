@@ -4,10 +4,13 @@ import 'package:flutter/material.dart';
 import '../data/cleaning_targets.dart';
 import '../models/cache_entry.dart';
 import '../models/cache_target.dart';
+import '../models/clean_event.dart';
 import '../models/cleaning_level.dart';
 import '../services/cache_remover.dart';
 import '../services/cache_scanner.dart';
 import '../services/disk_stats_service.dart';
+import '../services/exclusion_service.dart';
+import '../services/history_service.dart';
 import '../theme/level_palette.dart';
 import '../theme/tokens.dart';
 import '../utils/byte_formatter.dart';
@@ -35,8 +38,13 @@ class _CleanerScreenState extends State<CleanerScreen> {
   DiskStats? _disk;
   int _scanToken = 0;
 
-  late CacheScanner _scanner =
-      CacheScanner(privileged: widget.privileged);
+  final ExclusionService _exclusions = ExclusionService();
+  final HistoryService _history = HistoryService();
+
+  late CacheScanner _scanner = CacheScanner(
+    privileged: widget.privileged,
+    exclusions: _exclusions,
+  );
   late CacheRemover _remover =
       CacheRemover(privileged: widget.privileged);
   final DiskStatsService _diskStats = DiskStatsService();
@@ -52,7 +60,10 @@ class _CleanerScreenState extends State<CleanerScreen> {
   void didUpdateWidget(covariant CleanerScreen old) {
     super.didUpdateWidget(old);
     if (old.privileged != widget.privileged) {
-      _scanner = CacheScanner(privileged: widget.privileged);
+      _scanner = CacheScanner(
+        privileged: widget.privileged,
+        exclusions: _exclusions,
+      );
       _remover = CacheRemover(privileged: widget.privileged);
     }
     if (old.level != widget.level || old.privileged != widget.privileged) {
@@ -124,10 +135,29 @@ class _CleanerScreenState extends State<CleanerScreen> {
     if (ok != true) return;
 
     String? error;
+    final reclaimed = entry.sizeBytes;
     try {
       await _remover.empty(entry.directory, entry.target.risk);
     } catch (e) {
       error = e.toString();
+    }
+    if (error == null && reclaimed > 0) {
+      // CacheRemover empties contents in place rather than moving to
+      // Trash, so disposition is permanent. Recording this in history
+      // gives the user a paper-trail even if there's nothing to undo.
+      await _history.append(CleanEvent(
+        timestamp: DateTime.now(),
+        mode: widget.level.name,
+        totalBytes: reclaimed,
+        entries: [
+          CleanEventEntry(
+            path: entry.directory.path,
+            name: entry.target.name,
+            sizeBytes: reclaimed,
+            disposition: 'permanently_deleted',
+          ),
+        ],
+      ));
     }
     if (!mounted) return;
     _snack(
@@ -165,12 +195,30 @@ class _CleanerScreenState extends State<CleanerScreen> {
     if (ok != true) return;
 
     final failures = <String>[];
+    final logged = <CleanEventEntry>[];
     for (final entry in List<CacheEntry>.from(_entries)) {
+      final reclaimed = entry.sizeBytes;
       try {
         await _remover.empty(entry.directory, entry.target.risk);
+        if (reclaimed > 0) {
+          logged.add(CleanEventEntry(
+            path: entry.directory.path,
+            name: entry.target.name,
+            sizeBytes: reclaimed,
+            disposition: 'permanently_deleted',
+          ));
+        }
       } catch (e) {
         failures.add('${entry.target.name}: $e');
       }
+    }
+    if (logged.isNotEmpty) {
+      await _history.append(CleanEvent(
+        timestamp: DateTime.now(),
+        mode: widget.level.name,
+        totalBytes: logged.fold<int>(0, (a, e) => a + e.sizeBytes),
+        entries: logged,
+      ));
     }
     if (!mounted) return;
     _snack(
