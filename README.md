@@ -17,32 +17,13 @@
 
 ## Showcase
 
-|                                              |                                                |
-| -------------------------------------------- | ---------------------------------------------- |
-| ![Cleaner](docs/screenshots/cleaner.png)     | ![Tree Map](docs/screenshots/tree_map.png)     |
-| Risk-tagged cache list with one-tap reclaim. | Live disk tree-map — drill in by clicking.     |
-| ![Splash](docs/screenshots/splash.png)       | ![Permission](docs/screenshots/permission.png) |
-| Aurora intro (first launch only).            | Optional admin escalation for system caches.   |
-
-### Live demos
-
 <p align="center">
-  <img src="docs/gifs/clean_run.gif" alt="Light Scrub run, end to end" width="720"/>
+  <img src="docs/screenshots/cleaner.png" alt="Cleaner screen — Light Scrub" width="820"/>
+  <br/>
+  <em>Cleaner — Light Scrub mode. Risk-tagged caches, one-click reclaim, live total.</em>
 </p>
 
-<p align="center">
-  <em>Light Scrub: scan → review → move to Trash. Nothing is permanently deleted in this mode.</em>
-</p>
-
-<p align="center">
-  <img src="docs/gifs/tree_map.gif" alt="Tree Map drill-down" width="720"/>
-</p>
-
-<p align="center">
-  <em>Tree Map: hot directories surface first; click to drill, breadcrumb back up.</em>
-</p>
-
-> Screenshots and gifs live under [`docs/screenshots/`](docs/screenshots) and [`docs/gifs/`](docs/gifs). See [`docs/screenshots/CAPTURE.md`](docs/screenshots/CAPTURE.md) for the exact shots the README expects.
+> Additional screenshots (Tree Map, Splash, Permission prompt) and demo gifs go under [`docs/screenshots/`](docs/screenshots) and [`docs/gifs/`](docs/gifs). See [`docs/screenshots/CAPTURE.md`](docs/screenshots/CAPTURE.md) for the exact filenames + sizes the README will pick up — the showcase block expands automatically once they're committed.
 
 ---
 
