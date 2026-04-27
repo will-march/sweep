@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../models/cleaning_level.dart';
 import '../models/nav_selection.dart';
+import '../services/walkthrough_controller.dart';
 import '../theme/level_palette.dart';
 import '../theme/tokens.dart';
 
@@ -21,7 +22,10 @@ class AuroraSidebar extends StatelessWidget {
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
     final dark = Theme.of(context).brightness == Brightness.dark;
+    final walk = Walkthrough.read(context);
     return Container(
+      // The walkthrough's "sidebar" step spotlights the whole rail.
+      key: walk.sidebarKey,
       width: width,
       decoration: BoxDecoration(
         color: scheme.surfaceContainerLow,
@@ -71,15 +75,19 @@ class AuroraSidebar extends StatelessWidget {
                     const SizedBox(height: AuroraTokens.sp4),
                     const _SectionHeader('Usage'),
                     _NavRow(
+                      key: walk.treeMapNavKey,
                       icon: CupertinoIcons.chart_pie_fill,
                       label: 'Tree Map',
                       accent: scheme.primary,
                       active: selection is UsageNav &&
                           (selection as UsageNav).view == UsageView.treeMap,
-                      onTap: () => onSelect(const UsageNav(UsageView.treeMap)),
+                      onTap: () {
+                        walk.notifyTargetUsed(WalkthroughStep.treeMap);
+                        onSelect(const UsageNav(UsageView.treeMap));
+                      },
                     ),
                     const SizedBox(height: AuroraTokens.sp4),
-                    const _SectionHeader('Tools'),
+                    _SectionHeader('Tools', key: walk.toolsHeaderKey),
                     _NavRow(
                       icon: CupertinoIcons.clock_fill,
                       label: 'History',
@@ -184,7 +192,7 @@ class _Brand extends StatelessWidget {
 
 class _SectionHeader extends StatelessWidget {
   final String label;
-  const _SectionHeader(this.label);
+  const _SectionHeader(this.label, {super.key});
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -214,6 +222,7 @@ class _NavRow extends StatefulWidget {
   final bool active;
   final VoidCallback onTap;
   const _NavRow({
+    super.key,
     required this.icon,
     required this.label,
     required this.accent,

@@ -1,16 +1,18 @@
 import 'dart:io';
 
-/// Tracks first-run gates. Two markers:
-///  - intro_seen   → user finished the splash (1-2-3 animation)
-///  - tour_seen    → user finished the guided product tour
+/// Tracks first-run gates. Three markers:
+///  - intro_seen        → user finished the splash (1-2-3 animation)
+///  - tour_seen         → user finished the guided product tour
+///  - walkthrough_seen  → user finished the live coachmark walkthrough
 ///
 /// We persist marker files under
 /// ~/Library/Application Support/iMaculate/ so we don't depend on
-/// shared_preferences for two booleans.
+/// shared_preferences for three booleans.
 class FirstLaunchService {
   static const _dirName = 'iMaculate';
   static const _introMarker = 'intro_seen';
   static const _tourMarker = 'tour_seen';
+  static const _walkthroughMarker = 'walkthrough_seen';
 
   File _file(String name) {
     final home = Platform.environment['HOME'] ?? '/tmp';
@@ -33,8 +35,17 @@ class FirstLaunchService {
     }
   }
 
+  Future<bool> hasSeenWalkthrough() async {
+    try {
+      return _file(_walkthroughMarker).existsSync();
+    } catch (_) {
+      return false;
+    }
+  }
+
   Future<void> markIntroSeen() => _writeMarker(_introMarker);
   Future<void> markTourSeen() => _writeMarker(_tourMarker);
+  Future<void> markWalkthroughSeen() => _writeMarker(_walkthroughMarker);
 
   /// Backwards-compat alias kept so older callers compile until they
   /// migrate to [markIntroSeen]. New code should call the named markers.
@@ -51,7 +62,11 @@ class FirstLaunchService {
   }
 
   Future<void> reset() async {
-    for (final name in const [_introMarker, _tourMarker]) {
+    for (final name in const [
+      _introMarker,
+      _tourMarker,
+      _walkthroughMarker,
+    ]) {
       try {
         final f = _file(name);
         if (f.existsSync()) await f.delete();

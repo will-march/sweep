@@ -11,6 +11,7 @@ import '../services/cache_scanner.dart';
 import '../services/disk_stats_service.dart';
 import '../services/exclusion_service.dart';
 import '../services/history_service.dart';
+import '../services/walkthrough_controller.dart';
 import '../theme/level_palette.dart';
 import '../theme/tokens.dart';
 import '../utils/byte_formatter.dart';
@@ -245,6 +246,7 @@ class _CleanerScreenState extends State<CleanerScreen> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final walk = Walkthrough.read(context);
 
     return CustomScrollView(
       slivers: [
@@ -275,8 +277,12 @@ class _CleanerScreenState extends State<CleanerScreen> {
                 ),
                 const SizedBox(width: AuroraTokens.sp2),
                 FilledButton.icon(
+                  key: walk.cleanAllKey,
                   onPressed:
-                      (_loading || _entries.isEmpty) ? null : _cleanAll,
+                      (_loading || _entries.isEmpty) ? null : () {
+                    walk.notifyTargetUsed(WalkthroughStep.cleanAll);
+                    _cleanAll();
+                  },
                   icon: const Icon(CupertinoIcons.sparkles, size: 14),
                   label: const Text('Clean all'),
                 ),
@@ -289,12 +295,15 @@ class _CleanerScreenState extends State<CleanerScreen> {
             AuroraTokens.sp6, 0, AuroraTokens.sp6, AuroraTokens.sp4,
           ),
           sliver: SliverToBoxAdapter(
-            child: HeroSizeCard(
-              level: widget.level,
-              totalBytes: _total,
-              itemCount: _entries.length,
-              isLoading: _loading,
-              scanProgress: _loading ? _scanProgress : 1.0,
+            child: KeyedSubtree(
+              key: walk.heroKey,
+              child: HeroSizeCard(
+                level: widget.level,
+                totalBytes: _total,
+                itemCount: _entries.length,
+                isLoading: _loading,
+                scanProgress: _loading ? _scanProgress : 1.0,
+              ),
             ),
           ),
         ),
@@ -345,10 +354,15 @@ class _CleanerScreenState extends State<CleanerScreen> {
               separatorBuilder: (_, __) => const SizedBox(height: 8),
               itemBuilder: (context, i) {
                 final entry = _entries[i];
-                return CacheTile(
+                final tile = CacheTile(
                   entry: entry,
                   onDelete: () => _confirmAndRemove(entry),
                 );
+                // Tag the first row so the walkthrough's "each row is a
+                // finding" step can spotlight it.
+                return i == 0
+                    ? KeyedSubtree(key: walk.cacheRowKey, child: tile)
+                    : tile;
               },
             ),
           ),

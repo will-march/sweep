@@ -9,12 +9,13 @@ import 'services/first_launch_service.dart';
 import 'theme/app_theme.dart';
 
 /// First-launch gate. The user steps through:
-///   1. Splash    — the 1-2-3 scan/clean/enjoy animation.
-///   2. Tour      — the multi-page guided product tour.
-///   3. HomeShell — the regular app.
+///   1. Splash      — the 1-2-3 scan/clean/enjoy animation.
+///   2. Tour        — the multi-page guided product tour.
+///   3. Walkthrough — live coachmark overlay on top of HomeShell.
+///   4. HomeShell   — the regular app.
 /// Each step writes a marker to ~/Library/Application Support/iMaculate
 /// so subsequent launches skip the gate.
-enum _LaunchStage { unknown, splash, tour, home }
+enum _LaunchStage { unknown, splash, tour, walkthrough, home }
 
 class IMaculateApp extends StatefulWidget {
   const IMaculateApp({super.key});
@@ -36,13 +37,16 @@ class _IMaculateAppState extends State<IMaculateApp> {
   Future<void> _resolveStage() async {
     final intro = await _firstLaunch.hasSeenIntro();
     final tour = await _firstLaunch.hasSeenTour();
+    final walkthrough = await _firstLaunch.hasSeenWalkthrough();
     if (!mounted) return;
     setState(() {
       _stage = !intro
           ? _LaunchStage.splash
           : !tour
               ? _LaunchStage.tour
-              : _LaunchStage.home;
+              : !walkthrough
+                  ? _LaunchStage.walkthrough
+                  : _LaunchStage.home;
     });
   }
 
@@ -55,7 +59,7 @@ class _IMaculateAppState extends State<IMaculateApp> {
   Future<void> _completeTour() async {
     await _firstLaunch.markTourSeen();
     if (!mounted) return;
-    setState(() => _stage = _LaunchStage.home);
+    setState(() => _stage = _LaunchStage.walkthrough);
   }
 
   @override
@@ -79,6 +83,10 @@ class _IMaculateAppState extends State<IMaculateApp> {
         _LaunchStage.unknown => const ColoredBox(color: Color(0xFF08060F)),
         _LaunchStage.splash => SplashScreen(onComplete: _completeSplash),
         _LaunchStage.tour => TourScreen(onComplete: _completeTour),
+        // The walkthrough renders the real HomeShell with an active
+        // coachmark overlay; HomeShell's own listener writes the
+        // walkthrough_seen marker once the user finishes or skips.
+        _LaunchStage.walkthrough => const HomeShell(startWalkthrough: true),
         _LaunchStage.home => const HomeShell(),
       },
     );
