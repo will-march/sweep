@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="32%" cy="22%" r="92%">
+      <stop offset="0%" stop-color="#c5bcff"/>
+      <stop offset="20%" stop-color="#a89afa"/>
+      <stop offset="48%" stop-color="#7560e3"/>
+      <stop offset="78%" stop-color="#462db6"/>
+      <stop offset="100%" stop-color="#1d0a66"/>
+    </radialGradient>
+    <linearGradient id="gloss" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.32"/>
+      <stop offset="42%" stop-color="#ffffff" stop-opacity="0.06"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="well" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#322d46"/>
+      <stop offset="70%" stop-color="#1c1830"/>
+      <stop offset="100%" stop-color="#0a0716"/>
+    </radialGradient>
+    <linearGradient id="rim" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="50%" stop-color="#ffffff" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0.85"/>
+    </linearGradient>
+    <linearGradient id="sparkle" x1="0.2" y1="0" x2="0.8" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#f3eeff"/>
+      <stop offset="70%" stop-color="#c5bcff"/>
+      <stop offset="100%" stop-color="#a89afa"/>
+    </linearGradient>
+    <radialGradient id="bloom" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#c5bcff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#5b43d6" stop-opacity="0"/>
+    </radialGradient>
+    <clipPath id="clip">
+      <path d="M 200,0 L 824,0 C 914,0 1024,90 1024,200 L 1024,824 C 1024,914 914,1024 824,1024 L 200,1024 C 90,1024 0,914 0,824 L 0,200 C 0,90 90,0 200,0 Z"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#clip)">
+    <rect width="1024" height="1024" fill="url(#bg)"/>
+    <ellipse cx="220" cy="850" rx="600" ry="200" fill="#a89afa" opacity="0.18" transform="rotate(-22 220 850)"/>
+    <ellipse cx="820" cy="180" rx="500" ry="160" fill="#e3ddff" opacity="0.12" transform="rotate(18 820 180)"/>
+    <rect width="1024" height="1024" fill="url(#gloss)"/>
+
+    <circle cx="512" cy="487" r="410" fill="url(#bloom)" opacity="0.6"/>
+
+    <!-- Aperture inner well -->
+    <circle cx="512" cy="512" r="342" fill="url(#well)"/>
+    <!-- Aperture rim -->
+    <circle cx="512" cy="512" r="350" fill="none" stroke="url(#rim)" stroke-width="16"/>
+    <!-- Inner rim highlight -->
+    <path d="M 168 510 A 336 336 0 0 1 856 510" fill="none" stroke="#ffffff" stroke-opacity="0.35" stroke-width="3" stroke-linecap="round"/>
+
+    <!-- Sparkle, 4-point asymmetric -->
+    <g transform="translate(512, 487)">
+      <ellipse cx="0" cy="0" rx="270" ry="270" fill="#ffffff" opacity="0.08"/>
+      <path d="M 0 -240 C 30.24 -108 100.8 -43.2 204 0 C 100.8 43.2 30.24 108 0 240 C -30.24 108 -100.8 43.2 -204 0 C -100.8 -43.2 -30.24 -108 0 -240 Z" fill="url(#sparkle)"/>
+      <path d="M 0 -132 C 28.8 -60 52.8 -24 108 0 C 52.8 24 28.8 60 0 132 C -28.8 60 -52.8 24 -108 0 C -52.8 -24 -28.8 -60 0 -132 Z" fill="#ffffff" opacity="0.55"/>
+      <ellipse cx="-15" cy="-120" rx="32" ry="12" fill="#ffffff" opacity="0.85" transform="rotate(-25 -15 -120)"/>
+    </g>
+
+    <!-- Accent micro-sparkles (deterministic opacities) -->
+    <g transform="translate(760, 290)">
+      <path d="M 0 -28 C 5.04 -9.8 9.8 -5.04 28 0 C 9.8 5.04 5.04 9.8 0 28 C -5.04 9.8 -9.8 5.04 -28 0 C -9.8 -5.04 -5.04 -9.8 0 -28 Z" fill="#ffffff" opacity="0.7"/>
+    </g>
+    <g transform="translate(230, 740)">
+      <path d="M 0 -36 C 6.48 -12.6 12.6 -6.48 36 0 C 12.6 6.48 6.48 12.6 0 36 C -6.48 12.6 -12.6 6.48 -36 0 C -12.6 -6.48 -6.48 -12.6 0 -36 Z" fill="#ffffff" opacity="0.65"/>
+    </g>
+    <g transform="translate(800, 760)">
+      <path d="M 0 -18 C 3.24 -6.3 6.3 -3.24 18 0 C 6.3 3.24 3.24 6.3 0 18 C -3.24 6.3 -6.3 3.24 -18 0 C -6.3 -3.24 -3.24 -6.3 0 -18 Z" fill="#ffffff" opacity="0.6"/>
+    </g>
+
+    <!-- Bottom inner shadow for depth -->
+    <ellipse cx="512" cy="1100" rx="700" ry="180" fill="#000000" opacity="0.25"/>
+  </g>
+
+  <!-- Outer hairline so it doesn't dissolve into dark backgrounds -->
+  <path d="M 200,0 L 824,0 C 914,0 1024,90 1024,200 L 1024,824 C 1024,914 914,1024 824,1024 L 200,1024 C 90,1024 0,914 0,824 L 0,200 C 0,90 90,0 200,0 Z" fill="none" stroke="rgba(0,0,0,0.18)" stroke-width="1.5"/>
+</svg>
