@@ -7,13 +7,15 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/will-march/imaculate/releases/latest/download/iMaculate-macos-v1.0.0.dmg">
+  <a href="https://github.com/will-march/imaculate/releases/latest">
     <img alt="Download for macOS" src="https://img.shields.io/badge/Download-macOS%20.dmg-7f5af0?style=for-the-badge&logo=apple&logoColor=white"/>
   </a>
   &nbsp;
   <a href="https://github.com/will-march/imaculate/releases/latest">
     <img alt="GitHub release" src="https://img.shields.io/github/v/release/will-march/imaculate?style=for-the-badge&color=1d1d1f"/>
   </a>
+  &nbsp;
+  <img alt="brew tap" src="https://img.shields.io/badge/brew-will--march%2Ftap-fbb040?style=for-the-badge&logo=homebrew&logoColor=white"/>
 </p>
 
 <p align="center">
@@ -108,21 +110,110 @@ lib/
 
 ---
 
-## Install (precompiled binary)
+## Install
 
-The fastest path — no Flutter, no Xcode, no compile.
+### Homebrew (recommended)
 
-1. **Download** the latest release: [`iMaculate-macos-v1.0.0.dmg`](https://github.com/will-march/imaculate/releases/latest/download/iMaculate-macos-v1.0.0.dmg) *(20 MB)*. A `.zip` of the same `.app` is also attached if you'd rather skip the DMG.
-2. **Open the DMG** and drag `iMaculate.app` onto the **Applications** shortcut.
-3. **First launch** — macOS Gatekeeper will refuse to open it because the build isn't signed with an Apple Developer ID yet. Right-click `iMaculate.app` → **Open** → **Open** to override. Subsequent launches work normally.
+```sh
+brew tap will-march/tap
+brew install --cask imaculate
+```
+
+The cask pulls the `.dmg` from the latest GitHub release, drags `iMaculate.app` into `/Applications`, and prints the Gatekeeper override one-liner. Updates land via `brew upgrade --cask imaculate`. Clean uninstall with `brew uninstall --cask --zap imaculate` — the `--zap` flag also wipes `~/Library/Application Support/iMaculate` and the launchd agent plist.
+
+### Direct download
+
+Head to **[releases/latest](https://github.com/will-march/imaculate/releases/latest)** for the latest `.dmg` (drag-to-Applications, ~20 MB) or `.zip` (raw `.app`, ~50 MB). Drag `iMaculate.app` to `/Applications`.
+
+**First launch** — macOS Gatekeeper will refuse to open it because the build isn't signed with an Apple Developer ID yet. Right-click `iMaculate.app` → **Open** → **Open** to override. Subsequent launches work normally.
 
 iMaculate will request administrator privileges so it can read system caches under `/Library` and `/var`. Decline if you only want user-scope cleaning — everything else still works.
 
-> **Verify the download** (optional)
-> ```
-> shasum -a 256 iMaculate-macos-v1.0.0.dmg
-> 25c57d33c96ad477f42bde266a2648cdda92c6989acb74a19f6c38d260e2d66b
-> ```
+---
+
+## Command-line interface
+
+The `.app` ships a full CLI surface — every GUI feature is also reachable from a terminal, launchd, cron, or ssh. The binary inside the bundle does double duty: with no flags it opens the GUI, with `--headless` it runs a subcommand and exits.
+
+### Aliasing for daily use
+
+```sh
+echo 'alias imaculate="/Applications/iMaculate.app/Contents/MacOS/iMaculate --headless"' >> ~/.zshrc
+exec $SHELL
+imaculate help
+```
+
+After that, every example below works without the long `.app` path.
+
+### Subcommand reference
+
+| Subcommand | What it does |
+| --- | --- |
+| `help` | Print the full CLI help (the same content as below). |
+| `light-scrub` | Empty user caches and logs. Safe for cron / scheduled runs. |
+| `boilwash` | Light Scrub + Xcode DerivedData + iOS simulator caches + system app caches. |
+| `sandblast [--admin]` | Deep clean — adds `/Library/Updates`, `/var/log`, Xcode archives, iOS device backups. Add `--admin` for `/Library` + `/var`. |
+| `development` | Build-tool caches: npm, gradle, cargo, Maven, pip, Homebrew, Xcode DerivedData, Docker VMs, AVDs. |
+| `update-defs` | Pull the latest threat signatures from abuse.ch MalwareBazaar. |
+| `scan-threats` | Hash-match `/Applications`, `~/Downloads`, `~/Library/LaunchAgents` against local definitions; hits land in History. |
+| `tree-map [path]` | Print the top-20 entries by size at `[path]` (defaults to `$HOME`). |
+| `list-apps` | List every `.app` under `/Applications` + `~/Applications` with bundle ID and total disk impact (bundle + leftovers). |
+| `uninstall <id\|name\|path>` | Archive the bundle plus every leftover (Caches, Application Support, Containers, etc.) to `~/.Trash` and record a restore id. |
+| `exclusions list` / `add <path>` / `remove <path>` | Manage the prefix-match exclusion list. Honoured by both cleaner and tree-map. |
+| `schedule status` | Print current schedule + last-run timestamp. |
+| `schedule set <off\|daily\|weekly\|monthly> [--light-scrub] [--threat-scan] [--update-defs]` | Configure the scheduled job. Negate any task with the `--no-…` form. |
+| `scheduled-job` | Run the configured schedule once — what launchd invokes. |
+| `agent status` | Whether the launchd agent plist is installed. |
+| `agent install` | Write `~/Library/LaunchAgents/com.imaculate.scheduler.plist` and bootstrap it via `launchctl bootstrap gui/$UID`. The plist runs `iMaculate --headless scheduled-job` at 03:30 local time on the configured cadence. |
+| `agent uninstall` | `bootout` + delete the plist. |
+| `launch-items list` / `remove <plist\|label>` | Inspect / disable launchd agents in `~/Library/LaunchAgents`, `/Library/LaunchAgents`, `/Library/LaunchDaemons`. Removed plists are archived to Trash so they're restorable. |
+| `history [limit]` | Print the most recent History entries (default 20). |
+| `restore` | List restorable archive entries from the local restore log. |
+| `restore <id>` | Move every item inside that archive back to its original path. Refuses to overwrite. |
+| `reset-onboarding` | Clear splash / tour / walkthrough markers — next GUI launch replays the full intro. |
+
+### Recipes
+
+**Reclaim user caches every night** (no GUI needed):
+
+```sh
+imaculate schedule set daily --light-scrub --no-threat-scan --no-update-defs
+imaculate agent install
+```
+
+**Heavier weekly job** with threat scan and definitions refresh:
+
+```sh
+imaculate schedule set weekly --light-scrub --threat-scan --update-defs
+imaculate agent install
+```
+
+**Run the configured job once, right now:**
+
+```sh
+imaculate scheduled-job
+```
+
+**Inspect what's about to happen** before scheduling: `imaculate schedule status`, `imaculate agent status`.
+
+**Remove an app + every leftover** with one command:
+
+```sh
+imaculate uninstall com.tinyspeck.slackmacgap
+# Note the restore id printed at the end. To put it back:
+imaculate restore <id>
+```
+
+**Audit launch items** for adware:
+
+```sh
+imaculate launch-items list   # `!` prefix flags suspicious entries
+imaculate launch-items remove com.adware.example.agent
+```
+
+### Logs
+
+Every headless / launchd-driven run appends to `~/Library/Application Support/iMaculate/logs/headless.log` and (when launched by the agent) `scheduler.out.log` / `scheduler.err.log` in the same dir. The menu bar's **Reveal Logs in Finder** opens that folder.
 
 ---
 

@@ -6,6 +6,7 @@ import 'screens/home_shell.dart';
 import 'screens/splash_screen.dart';
 import 'screens/tour_screen.dart';
 import 'services/first_launch_service.dart';
+import 'services/menu_bar_channel.dart';
 import 'theme/app_theme.dart';
 
 /// First-launch gate. The user steps through:
@@ -32,6 +33,10 @@ class _IMaculateAppState extends State<IMaculateApp> {
   void initState() {
     super.initState();
     _resolveStage();
+    // Bind the menu bar channel once — the Swift NSStatusItem stays
+    // around for the lifetime of the window and routes user picks
+    // through this handler.
+    MenuBarChannel.install();
   }
 
   Future<void> _resolveStage() async {

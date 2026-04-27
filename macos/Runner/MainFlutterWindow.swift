@@ -2,6 +2,11 @@ import Cocoa
 import FlutterMacOS
 
 class MainFlutterWindow: NSWindow {
+  // Strong-ref the menu bar controller so its NSStatusItem stays alive
+  // for the lifetime of the window. Without this the status item gets
+  // collected the moment awakeFromNib returns.
+  private var menuBarController: MenuBarController?
+
   override func awakeFromNib() {
     let flutterViewController = FlutterViewController()
     let windowFrame = self.frame
@@ -16,6 +21,15 @@ class MainFlutterWindow: NSWindow {
     self.isMovableByWindowBackground = true
 
     RegisterGeneratedPlugins(registry: flutterViewController)
+
+    // MethodChannel that the menu bar controller fires into when the
+    // user picks an item from the menubar menu. Dart side listens via
+    // services/menu_bar_channel.dart.
+    let channel = FlutterMethodChannel(
+      name: "imaculate.menubar",
+      binaryMessenger: flutterViewController.engine.binaryMessenger
+    )
+    menuBarController = MenuBarController(channel: channel, window: self)
 
     super.awakeFromNib()
   }
