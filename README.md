@@ -7,11 +7,23 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/will-march/imaculate/releases/latest/download/iMaculate-macos-v1.0.0.dmg">
+    <img alt="Download for macOS" src="https://img.shields.io/badge/Download-macOS%20.dmg-7f5af0?style=for-the-badge&logo=apple&logoColor=white"/>
+  </a>
+  &nbsp;
+  <a href="https://github.com/will-march/imaculate/releases/latest">
+    <img alt="GitHub release" src="https://img.shields.io/github/v/release/will-march/imaculate?style=for-the-badge&color=1d1d1f"/>
+  </a>
+</p>
+
+<p align="center">
   <img alt="platform" src="https://img.shields.io/badge/platform-macOS%2010.15%2B-1d1d1f?style=flat-square"/>
   <img alt="flutter" src="https://img.shields.io/badge/flutter-3.0%2B-02569B?style=flat-square&logo=flutter&logoColor=white"/>
   <img alt="dart"    src="https://img.shields.io/badge/dart-3.0%2B-0175C2?style=flat-square&logo=dart&logoColor=white"/>
   <img alt="status"  src="https://img.shields.io/badge/status-actively%20developed-7f5af0?style=flat-square"/>
 </p>
+
+> **Get it now:** the [latest release](https://github.com/will-march/imaculate/releases/latest) ships a `.dmg` (drag-to-Applications) and a `.zip` of the `iMaculate.app` bundle. macOS 10.15+, Apple Silicon and Intel.
 
 ---
 
@@ -96,7 +108,25 @@ lib/
 
 ---
 
-## Run / rebuild
+## Install (precompiled binary)
+
+The fastest path — no Flutter, no Xcode, no compile.
+
+1. **Download** the latest release: [`iMaculate-macos-v1.0.0.dmg`](https://github.com/will-march/imaculate/releases/latest/download/iMaculate-macos-v1.0.0.dmg) *(20 MB)*. A `.zip` of the same `.app` is also attached if you'd rather skip the DMG.
+2. **Open the DMG** and drag `iMaculate.app` onto the **Applications** shortcut.
+3. **First launch** — macOS Gatekeeper will refuse to open it because the build isn't signed with an Apple Developer ID yet. Right-click `iMaculate.app` → **Open** → **Open** to override. Subsequent launches work normally.
+
+iMaculate will request administrator privileges so it can read system caches under `/Library` and `/var`. Decline if you only want user-scope cleaning — everything else still works.
+
+> **Verify the download** (optional)
+> ```
+> shasum -a 256 iMaculate-macos-v1.0.0.dmg
+> 25c57d33c96ad477f42bde266a2648cdda92c6989acb74a19f6c38d260e2d66b
+> ```
+
+---
+
+## Run / rebuild from source
 
 ### Prerequisites
 
