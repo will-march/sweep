@@ -4,12 +4,14 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../models/clean_event.dart';
 import '../models/directory_info.dart';
 import '../models/storage_category.dart';
+import '../services/archive_trash_service.dart';
 import '../services/disk_scanner.dart';
 import '../services/disk_stats_service.dart';
 import '../services/exclusion_service.dart';
-import '../services/trash_service.dart';
+import '../services/history_service.dart';
 import '../theme/tokens.dart';
 import '../utils/byte_formatter.dart';
 import '../widgets/treemap_view.dart';
@@ -53,9 +55,10 @@ class TreeMapScreen extends StatefulWidget {
 
 class _TreeMapScreenState extends State<TreeMapScreen> {
   DiskScanner _scanner = DiskScanner();
-  final _trash = TrashService();
+  final _archive = ArchiveTrashService();
   final _diskStats = DiskStatsService();
   final _exclusions = ExclusionService();
+  final _history = HistoryService();
 
   late final List<String> _stack = [Platform.environment['HOME'] ?? '/'];
 
@@ -171,16 +174,41 @@ class _TreeMapScreenState extends State<TreeMapScreen> {
     );
     if (ok != true) return;
     try {
-      await _trash.moveToTrash(f.path);
+      // archiveAndTrash zips the target via ditto, drops the archive
+      // in ~/.Trash and records a RestoreEntry so the History screen
+      // can restore it.
+      final entry = await _archive.archiveAndTrash(
+        label: f.name,
+        kind: 'treemap_trash',
+        sourcePaths: [f.path],
+      );
+      await _history.append(CleanEvent(
+        timestamp: DateTime.now(),
+        mode: 'treemap_trash',
+        totalBytes: entry.totalBytes,
+        entries: [
+          CleanEventEntry(
+            path: f.path,
+            name: f.name,
+            sizeBytes: entry.totalBytes,
+            disposition: 'archived_in_trash',
+          ),
+        ],
+        restoreId: entry.id,
+      ));
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Moved ${f.name} to Trash')),
+        SnackBar(
+          content: Text(
+            'Archived ${f.name} to Trash — restore from History',
+          ),
+        ),
       );
       _scan();
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Could not move to Trash: $e')),
+        SnackBar(content: Text('Could not archive to Trash: $e')),
       );
     }
   }

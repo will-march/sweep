@@ -19,12 +19,17 @@ class InstalledApp {
   /// ID or app name and is safe to remove on uninstall.
   final List<AppLeftover> leftovers;
 
+  /// Path to a cached PNG of the app's icon, or null when extraction
+  /// failed (no .icns, sips error, etc.). UI falls back to a glyph.
+  final String? iconPath;
+
   const InstalledApp({
     required this.name,
     required this.bundleId,
     required this.bundlePath,
     required this.bundleSize,
     required this.leftovers,
+    this.iconPath,
   });
 
   int get leftoverBytes =>

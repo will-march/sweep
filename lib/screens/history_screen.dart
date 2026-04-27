@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/clean_event.dart';
+import '../services/archive_trash_service.dart';
 import '../services/first_launch_service.dart';
 import '../services/history_service.dart';
 import '../theme/tokens.dart';
@@ -19,6 +20,7 @@ class HistoryScreen extends StatefulWidget {
 class _HistoryScreenState extends State<HistoryScreen> {
   final _history = HistoryService();
   final _firstLaunch = FirstLaunchService();
+  final _archive = ArchiveTrashService();
   Future<List<CleanEvent>>? _events;
 
   @override
@@ -65,6 +67,53 @@ class _HistoryScreenState extends State<HistoryScreen> {
     // emptied between clean and restore.
     final home = Platform.environment['HOME'] ?? '';
     Process.run('open', ['$home/.Trash']);
+  }
+
+  Future<void> _restoreEvent(CleanEvent event) async {
+    final restoreId = event.restoreId;
+    if (restoreId == null) {
+      // In-place empties (cache clean) have no recoverable archive —
+      // the user has to drag whatever Trash already had back manually.
+      _openTrash();
+      return;
+    }
+    final messenger = ScaffoldMessenger.of(context);
+    messenger.showSnackBar(
+      const SnackBar(
+        content: Text('Restoring from archive…'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+    try {
+      final result = await _archive.restore(restoreId);
+      if (!mounted) return;
+      if (result.allSucceeded) {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              'Restored ${result.restored.length} '
+              '${result.restored.length == 1 ? "item" : "items"}',
+            ),
+          ),
+        );
+      } else {
+        messenger.showSnackBar(
+          SnackBar(
+            content: Text(
+              '${result.restored.length} restored, '
+              '${result.failures.length} failed — see ${result.failures.first}',
+            ),
+            duration: const Duration(seconds: 5),
+          ),
+        );
+      }
+      _refresh();
+    } catch (e) {
+      if (!mounted) return;
+      messenger.showSnackBar(
+        SnackBar(content: Text('Restore failed: $e')),
+      );
+    }
   }
 
   Future<void> _replayOnboarding() async {
@@ -158,8 +207,11 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   itemCount: events.length,
                   separatorBuilder: (_, __) =>
                       const SizedBox(height: AuroraTokens.sp2),
-                  itemBuilder: (context, i) =>
-                      _EventTile(event: events[i], onOpenTrash: _openTrash),
+                  itemBuilder: (context, i) => _EventTile(
+                    event: events[i],
+                    onOpenTrash: _openTrash,
+                    onRestore: () => _restoreEvent(events[i]),
+                  ),
                 );
               },
             ),
@@ -247,7 +299,12 @@ class _Header extends StatelessWidget {
 class _EventTile extends StatelessWidget {
   final CleanEvent event;
   final VoidCallback onOpenTrash;
-  const _EventTile({required this.event, required this.onOpenTrash});
+  final VoidCallback onRestore;
+  const _EventTile({
+    required this.event,
+    required this.onOpenTrash,
+    required this.onRestore,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -326,11 +383,20 @@ class _EventTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: AuroraTokens.sp3),
-              TextButton.icon(
-                onPressed: onOpenTrash,
-                icon: const Icon(CupertinoIcons.arrow_uturn_left, size: 14),
-                label: const Text('Restore'),
-              ),
+              if (event.restoreId != null)
+                FilledButton.tonalIcon(
+                  onPressed: onRestore,
+                  icon: const Icon(
+                      CupertinoIcons.arrow_uturn_left, size: 14),
+                  label: const Text('Restore'),
+                )
+              else
+                TextButton.icon(
+                  onPressed: onOpenTrash,
+                  icon: const Icon(
+                      CupertinoIcons.arrow_uturn_left, size: 14),
+                  label: const Text('Open Trash'),
+                ),
             ],
           ),
           const SizedBox(height: AuroraTokens.sp2),

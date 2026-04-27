@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import '../models/installed_app.dart';
+import 'icon_extractor.dart';
 
 /// Walks `/Applications` (and `~/Applications` if present) and returns
 /// every `.app` bundle plus its associated user-scope leftovers
@@ -12,6 +13,8 @@ import '../models/installed_app.dart';
 /// uninstaller are catastrophic — we'd rather miss a 2 MB cache than
 /// trash an unrelated app's data.
 class InstalledAppsService {
+  final IconExtractor _icons = IconExtractor();
+
   Future<List<InstalledApp>> scan() async {
     final home = Platform.environment['HOME'] ?? '';
     final dirs = <String>['/Applications', '$home/Applications'];
@@ -47,12 +50,17 @@ class InstalledAppsService {
       }
       final size = await _du(bundle.path);
       final leftovers = await _findLeftovers(home, bundleId, name);
+      final iconPath = await _icons.extractFor(
+        bundlePath: bundle.path,
+        bundleId: bundleId,
+      );
       return InstalledApp(
         name: name,
         bundleId: bundleId,
         bundlePath: bundle.path,
         bundleSize: size,
         leftovers: leftovers,
+        iconPath: iconPath,
       );
     } catch (_) {
       return null;

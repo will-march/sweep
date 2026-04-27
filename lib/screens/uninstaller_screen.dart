@@ -1,11 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/clean_event.dart';
 import '../models/installed_app.dart';
+import '../services/archive_trash_service.dart';
 import '../services/history_service.dart';
 import '../services/installed_apps_service.dart';
-import '../services/trash_service.dart';
 import '../theme/tokens.dart';
 import '../utils/byte_formatter.dart';
 
@@ -18,7 +20,7 @@ class UninstallerScreen extends StatefulWidget {
 
 class _UninstallerScreenState extends State<UninstallerScreen> {
   final _service = InstalledAppsService();
-  final _trash = TrashService();
+  final _archive = ArchiveTrashService();
   final _history = HistoryService();
   Future<List<InstalledApp>>? _apps;
 
@@ -84,48 +86,67 @@ class _UninstallerScreenState extends State<UninstallerScreen> {
     );
     if (ok != true) return;
 
-    final logged = <CleanEventEntry>[];
-    final failures = <String>[];
+    final sources = <String>[
+      app.bundlePath,
+      ...app.leftovers.map((l) => l.path),
+    ].where((p) => p.isNotEmpty).toList();
 
-    for (final target in [
-      (label: app.name, path: app.bundlePath, size: app.bundleSize),
-      ...app.leftovers
-          .map((l) => (label: l.label, path: l.path, size: l.size)),
-    ]) {
-      try {
-        await _trash.moveToTrash(target.path);
+    String snackMessage = 'Uninstalled ${app.name}';
+    String? restoreId;
+    var totalBytes = 0;
+    final logged = <CleanEventEntry>[];
+
+    try {
+      // archiveAndTrash zips every source via ditto (preserving bundle
+      // metadata), drops a single .zip in ~/.Trash, deletes the
+      // originals, and writes a RestoreEntry. The id we get back is
+      // what lets the History screen offer a one-click restore.
+      final entry = await _archive.archiveAndTrash(
+        label: app.name,
+        kind: 'uninstall',
+        sourcePaths: sources,
+      );
+      restoreId = entry.id;
+      totalBytes = entry.totalBytes;
+      // Mirror each archived item into the history-event log so the
+      // History screen can show the breakdown.
+      for (final item in entry.items) {
         logged.add(CleanEventEntry(
-          path: target.path,
-          name: '${app.name} · ${target.label}',
-          sizeBytes: target.size,
-          disposition: 'trashed',
+          path: item.originalPath,
+          name: '${app.name} · ${_basenameOf(item.originalPath)}',
+          sizeBytes: item.sizeBytes,
+          disposition: 'archived_in_trash',
         ));
-      } catch (e) {
-        failures.add('${target.label}: $e');
       }
+      snackMessage = 'Uninstalled ${app.name} — restorable from History';
+    } catch (e) {
+      snackMessage = 'Uninstall failed: $e';
     }
 
     if (logged.isNotEmpty) {
       await _history.append(CleanEvent(
         timestamp: DateTime.now(),
         mode: 'uninstall',
-        totalBytes: logged.fold<int>(0, (a, e) => a + e.sizeBytes),
+        totalBytes: totalBytes,
         entries: logged,
+        restoreId: restoreId,
       ));
     }
 
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          failures.isEmpty
-              ? 'Uninstalled ${app.name}'
-              : '${failures.length} of ${logged.length + failures.length} '
-                  'items failed',
-        ),
+        content: Text(snackMessage),
       ),
     );
     _refresh();
+  }
+
+  String _basenameOf(String path) {
+    final clean =
+        path.endsWith('/') ? path.substring(0, path.length - 1) : path;
+    final i = clean.lastIndexOf('/');
+    return i < 0 ? clean : clean.substring(i + 1);
   }
 
   @override
@@ -234,6 +255,43 @@ class _UninstallerScreenState extends State<UninstallerScreen> {
   }
 }
 
+class _AppIcon extends StatelessWidget {
+  final InstalledApp app;
+  final ColorScheme scheme;
+  const _AppIcon({required this.app, required this.scheme});
+
+  @override
+  Widget build(BuildContext context) {
+    final iconPath = app.iconPath;
+    final hasIcon = iconPath != null && File(iconPath).existsSync();
+    return Container(
+      width: 36,
+      height: 36,
+      decoration: BoxDecoration(
+        color: hasIcon
+            ? Colors.transparent
+            : scheme.primary.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      clipBehavior: Clip.antiAlias,
+      alignment: Alignment.center,
+      child: hasIcon
+          ? Image.file(
+              File(iconPath),
+              width: 36,
+              height: 36,
+              fit: BoxFit.contain,
+              filterQuality: FilterQuality.medium,
+              errorBuilder: (_, __, ___) =>
+                  Icon(CupertinoIcons.app_fill,
+                      size: 18, color: scheme.primary),
+            )
+          : Icon(CupertinoIcons.app_fill,
+              size: 18, color: scheme.primary),
+    );
+  }
+}
+
 class _AppRow extends StatefulWidget {
   final InstalledApp app;
   final VoidCallback onUninstall;
@@ -265,17 +323,7 @@ class _AppRowState extends State<_AppRow> {
             AuroraTokens.sp3, AuroraTokens.sp3, AuroraTokens.sp3, AuroraTokens.sp3),
         child: Row(
           children: [
-            Container(
-              width: 32,
-              height: 32,
-              decoration: BoxDecoration(
-                color: scheme.primary.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(7),
-              ),
-              alignment: Alignment.center,
-              child: Icon(CupertinoIcons.app_fill,
-                  size: 16, color: scheme.primary),
-            ),
+            _AppIcon(app: widget.app, scheme: scheme),
             const SizedBox(width: AuroraTokens.sp3),
             Expanded(
               child: Column(
