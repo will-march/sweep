@@ -19,6 +19,35 @@ cask "imaculate" do
 
   app "iMaculate.app"
 
+  # Drop a CLI wrapper into the Homebrew bin so users can just type
+  # `imaculate <subcommand>` instead of `/Applications/iMaculate.app/
+  # Contents/MacOS/iMaculate --headless <subcommand>`. The wrapper
+  # itself is a small shell script — no admin needed because
+  # HOMEBREW_PREFIX is owned by the user.
+  postflight do
+    bin = "#{HOMEBREW_PREFIX}/bin"
+    FileUtils.mkdir_p(bin)
+    wrapper = "#{bin}/imaculate"
+    File.write(wrapper, <<~SH)
+      #!/bin/sh
+      # iMaculate CLI wrapper — installed by the Homebrew cask.
+      for candidate in \\
+        "/Applications/iMaculate.app" \\
+        "$HOME/Applications/iMaculate.app"; do
+        if [ -x "$candidate/Contents/MacOS/iMaculate" ]; then
+          exec "$candidate/Contents/MacOS/iMaculate" --headless "$@"
+        fi
+      done
+      echo "iMaculate.app not found in /Applications or ~/Applications" >&2
+      exit 127
+    SH
+    FileUtils.chmod 0755, wrapper
+  end
+
+  uninstall_postflight do
+    FileUtils.rm_f("#{HOMEBREW_PREFIX}/bin/imaculate")
+  end
+
   # iMaculate persists state under ~/Library/Application Support/iMaculate
   # (history, exclusions, schedule, restore log, threat definitions,
   # icon cache, headless logs). Optional uninstall helpers below
@@ -32,14 +61,21 @@ cask "imaculate" do
   ]
 
   caveats <<~EOS
+    The CLI wrapper has been installed to:
+        #{HOMEBREW_PREFIX}/bin/imaculate
+
+    Try `imaculate help` to see every subcommand. The wrapper just
+    forwards args to iMaculate.app's binary in --headless mode, so
+    `imaculate light-scrub` runs the cleaner without opening the GUI.
+
     iMaculate is not yet signed with an Apple Developer ID. The first
     launch will be blocked by Gatekeeper — right-click the app in
     Applications and choose "Open" to confirm. After that, normal
     double-click works.
 
     The launchd agent at ~/Library/LaunchAgents/com.imaculate.scheduler.plist
-    runs `iMaculate --headless scheduled-job`. Disable it from the
-    Schedule screen or with `iMaculate --headless agent uninstall`
-    before removing the cask if you don't want orphan jobs.
+    runs `imaculate scheduled-job`. Disable it from the Schedule
+    screen or with `imaculate agent uninstall` before removing the
+    cask if you don't want orphan jobs.
   EOS
 end

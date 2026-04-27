@@ -76,6 +76,9 @@ class _IMaculateAppState extends State<IMaculateApp> {
     return MaterialApp(
       title: 'iMaculate',
       debugShowCheckedModeBanner: false,
+      // Global messenger so handlers outside the widget tree (the menu
+      // bar's MethodChannel) can showSnackBar.
+      scaffoldMessengerKey: MenuBarChannel.messengerKey,
       themeMode: ThemeMode.system,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),

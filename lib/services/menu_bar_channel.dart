@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../data/cleaning_targets.dart';
@@ -5,6 +6,7 @@ import '../models/clean_event.dart';
 import '../models/cleaning_level.dart';
 import 'cache_remover.dart';
 import 'cache_scanner.dart';
+import 'cli_installer_service.dart';
 import 'exclusion_service.dart';
 import 'history_service.dart';
 import 'schedule_service.dart';
@@ -23,6 +25,11 @@ import 'threat_definitions_service.dart';
 class MenuBarChannel {
   static const _channelName = 'imaculate.menubar';
 
+  /// Global ScaffoldMessenger key so menu-bar handlers (which run
+  /// outside any BuildContext) can show snackbars in the main window.
+  /// MaterialApp wires this up via [scaffoldMessengerKey].
+  static final messengerKey = GlobalKey<ScaffoldMessengerState>();
+
   /// Bind the channel handler. Optional [onOpenApp] is fired when the
   /// user picks "Open iMaculate" so the host can also do an in-app
   /// nav (e.g. focus the cleaner screen).
@@ -35,9 +42,11 @@ class MenuBarChannel {
           return null;
         case 'lightScrub':
           await _lightScrub();
+          _toast('Light Scrub finished — see History.');
           return null;
         case 'updateDefs':
           await _updateDefs();
+          _toast('Threat definitions updated.');
           return null;
         case 'threatScan':
           // The GUI's threat scan is a long-running streamed job and
@@ -46,13 +55,38 @@ class MenuBarChannel {
           // a definitions refresh — the heavy scan stays on the
           // dedicated screen.
           await _updateDefs();
+          _toast('Definitions refreshed. Open Threat Scan to run.');
           return null;
         case 'scheduledJob':
           await _scheduledJob();
+          _toast('Scheduled job finished.');
+          return null;
+        case 'installCli':
+          await _installCli();
           return null;
       }
       return null;
     });
+  }
+
+  static void _toast(String message) {
+    final m = messengerKey.currentState;
+    if (m == null) return;
+    m.showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 4),
+      ),
+    );
+  }
+
+  static Future<void> _installCli() async {
+    final svc = CliInstallerService();
+    final installed = await svc.isInstalled();
+    final result = installed
+        ? await svc.uninstall()
+        : await svc.install();
+    _toast(result.message);
   }
 
   static Future<void> _lightScrub() async {

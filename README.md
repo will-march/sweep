@@ -135,15 +135,25 @@ iMaculate will request administrator privileges so it can read system caches und
 
 The `.app` ships a full CLI surface — every GUI feature is also reachable from a terminal, launchd, cron, or ssh. The binary inside the bundle does double duty: with no flags it opens the GUI, with `--headless` it runs a subcommand and exits.
 
-### Aliasing for daily use
+### Getting `imaculate` on your `$PATH`
 
-```sh
-echo 'alias imaculate="/Applications/iMaculate.app/Contents/MacOS/iMaculate --headless"' >> ~/.zshrc
-exec $SHELL
-imaculate help
-```
+Three ways, in order of friction:
 
-After that, every example below works without the long `.app` path.
+- **Homebrew install (recommended)** — the cask drops a wrapper at `$HOMEBREW_PREFIX/bin/imaculate` automatically. Just type `imaculate help` after `brew install --cask imaculate`.
+- **DMG install** — open iMaculate, click the menu bar icon (sparkle in the system bar), pick **Install Command-Line Tool…**. The action probes `/opt/homebrew/bin` first (no admin needed on Apple Silicon Homebrew); falls back to `/usr/local/bin` with an admin prompt otherwise. The same menu item flips to "Uninstall" once installed.
+- **Manual** — paste this if you'd rather skip the GUI step:
+  ```sh
+  sudo tee /usr/local/bin/imaculate >/dev/null <<'SH'
+  #!/bin/sh
+  for app in "/Applications/iMaculate.app" "$HOME/Applications/iMaculate.app"; do
+    [ -x "$app/Contents/MacOS/iMaculate" ] && exec "$app/Contents/MacOS/iMaculate" --headless "$@"
+  done
+  echo "iMaculate.app not found" >&2; exit 127
+  SH
+  sudo chmod +x /usr/local/bin/imaculate
+  ```
+
+After install, `imaculate help` should print the full subcommand reference. (`/usr/bin` is SIP-protected on macOS; we install to `/usr/local/bin` or `/opt/homebrew/bin`, both of which are on the default `$PATH`.)
 
 ### Subcommand reference
 

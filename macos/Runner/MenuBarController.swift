@@ -87,6 +87,13 @@ final class MenuBarController: NSObject {
     menu.addItem(.separator())
     menu.addItem(
       makeItem(
+        title: "Install Command-Line Tool…",
+        action: #selector(installCli),
+        key: ""
+      )
+    )
+    menu.addItem(
+      makeItem(
         title: "Reveal Logs in Finder",
         action: #selector(revealLogs),
         key: ""
@@ -132,6 +139,10 @@ final class MenuBarController: NSObject {
 
   @objc private func scheduledJob() {
     channel.invokeMethod("scheduledJob", arguments: nil)
+  }
+
+  @objc private func installCli() {
+    channel.invokeMethod("installCli", arguments: nil)
   }
 
   @objc private func revealLogs() {
