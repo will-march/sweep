@@ -4,8 +4,17 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'l10n/app_localizations.dart';
 import 'screens/home_shell.dart';
 import 'screens/splash_screen.dart';
+import 'screens/tour_screen.dart';
 import 'services/first_launch_service.dart';
 import 'theme/app_theme.dart';
+
+/// First-launch gate. The user steps through:
+///   1. Splash    — the 1-2-3 scan/clean/enjoy animation.
+///   2. Tour      — the multi-page guided product tour.
+///   3. HomeShell — the regular app.
+/// Each step writes a marker to ~/Library/Application Support/iMaculate
+/// so subsequent launches skip the gate.
+enum _LaunchStage { unknown, splash, tour, home }
 
 class IMaculateApp extends StatefulWidget {
   const IMaculateApp({super.key});
@@ -16,20 +25,37 @@ class IMaculateApp extends StatefulWidget {
 
 class _IMaculateAppState extends State<IMaculateApp> {
   final _firstLaunch = FirstLaunchService();
-  late Future<bool> _seen;
+  _LaunchStage _stage = _LaunchStage.unknown;
 
   @override
   void initState() {
     super.initState();
-    _seen = _firstLaunch.hasSeenIntro();
+    _resolveStage();
   }
 
-  Future<void> _completeIntro() async {
-    await _firstLaunch.markSeen();
+  Future<void> _resolveStage() async {
+    final intro = await _firstLaunch.hasSeenIntro();
+    final tour = await _firstLaunch.hasSeenTour();
     if (!mounted) return;
     setState(() {
-      _seen = Future.value(true);
+      _stage = !intro
+          ? _LaunchStage.splash
+          : !tour
+              ? _LaunchStage.tour
+              : _LaunchStage.home;
     });
+  }
+
+  Future<void> _completeSplash() async {
+    await _firstLaunch.markIntroSeen();
+    if (!mounted) return;
+    setState(() => _stage = _LaunchStage.tour);
+  }
+
+  Future<void> _completeTour() async {
+    await _firstLaunch.markTourSeen();
+    if (!mounted) return;
+    setState(() => _stage = _LaunchStage.home);
   }
 
   @override
@@ -40,8 +66,6 @@ class _IMaculateAppState extends State<IMaculateApp> {
       themeMode: ThemeMode.system,
       theme: AppTheme.light(),
       darkTheme: AppTheme.dark(),
-      // Localization wiring. The runtime auto-picks the user's
-      // preferred locale; English is the fallback.
       localizationsDelegates: const [
         AppLocalizations.delegate,
         GlobalMaterialLocalizations.delegate,
@@ -49,20 +73,14 @@ class _IMaculateAppState extends State<IMaculateApp> {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      home: FutureBuilder<bool>(
-        future: _seen,
-        builder: (context, snap) {
-          // Pre-resolution placeholder matches the splash background so the
-          // window doesn't flash white while we read the marker file.
-          if (!snap.hasData) {
-            return const ColoredBox(color: Color(0xFF08060F));
-          }
-          if (snap.data == true) {
-            return const HomeShell();
-          }
-          return SplashScreen(onComplete: _completeIntro);
-        },
-      ),
+      home: switch (_stage) {
+        // While we read marker files, paint the splash backdrop so the
+        // window doesn't flash white.
+        _LaunchStage.unknown => const ColoredBox(color: Color(0xFF08060F)),
+        _LaunchStage.splash => SplashScreen(onComplete: _completeSplash),
+        _LaunchStage.tour => TourScreen(onComplete: _completeTour),
+        _LaunchStage.home => const HomeShell(),
+      },
     );
   }
 }

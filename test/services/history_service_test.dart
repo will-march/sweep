@@ -17,7 +17,7 @@ void main() {
     if (await tmp.exists()) await tmp.delete(recursive: true);
   });
 
-  CleanEvent _event({DateTime? at, int bytes = 1024}) => CleanEvent(
+  CleanEvent buildEvent({DateTime? at, int bytes = 1024}) => CleanEvent(
         timestamp: at ?? DateTime.now(),
         mode: 'lightScrub',
         totalBytes: bytes,
@@ -36,7 +36,7 @@ void main() {
   });
 
   test('append persists across reads', () async {
-    await service.append(_event(bytes: 4096));
+    await service.append(buildEvent(bytes: 4096));
     final read = await service.readAll();
     expect(read, hasLength(1));
     expect(read.first.totalBytes, 4096);
@@ -44,8 +44,8 @@ void main() {
   });
 
   test('newest events appear first', () async {
-    final earlier = _event(at: DateTime(2026, 1, 1), bytes: 1);
-    final later = _event(at: DateTime(2026, 6, 1), bytes: 2);
+    final earlier = buildEvent(at: DateTime(2026, 1, 1), bytes: 1);
+    final later = buildEvent(at: DateTime(2026, 6, 1), bytes: 2);
     await service.append(earlier);
     await service.append(later);
     final read = await service.readAll();
@@ -58,14 +58,14 @@ void main() {
     // Append more than maxEntries to confirm trimming.
     final cap = HistoryService.maxEntries;
     for (var i = 0; i < cap + 5; i++) {
-      await service.append(_event(bytes: i));
+      await service.append(buildEvent(bytes: i));
     }
     final read = await service.readAll();
     expect(read, hasLength(cap));
   });
 
   test('clear deletes the file', () async {
-    await service.append(_event());
+    await service.append(buildEvent());
     await service.clear();
     expect(await service.readAll(), isEmpty);
   });
