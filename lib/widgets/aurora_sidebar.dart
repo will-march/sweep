@@ -125,6 +125,48 @@ class AuroraSidebar extends StatelessWidget {
                           onSelect(const ToolNav(ToolView.uninstaller)),
                     ),
                     const SizedBox(height: AuroraTokens.sp4),
+                    const _SectionHeader('Project Tools'),
+                    _NavRow(
+                      icon: CupertinoIcons.hammer_fill,
+                      label: 'Xcode Projects',
+                      accent: scheme.primary,
+                      active: selection is ToolNav &&
+                          (selection as ToolNav).view ==
+                              ToolView.xcodeProjects,
+                      onTap: () => onSelect(
+                          const ToolNav(ToolView.xcodeProjects)),
+                    ),
+                    _NavRow(
+                      icon: CupertinoIcons.cube_box_fill,
+                      label: 'Project Caches',
+                      accent: scheme.primary,
+                      active: selection is ToolNav &&
+                          (selection as ToolNav).view ==
+                              ToolView.orphanCaches,
+                      onTap: () => onSelect(
+                          const ToolNav(ToolView.orphanCaches)),
+                    ),
+                    _NavRow(
+                      icon: CupertinoIcons.archivebox_fill,
+                      label: 'Big & Old Files',
+                      accent: scheme.primary,
+                      active: selection is ToolNav &&
+                          (selection as ToolNav).view ==
+                              ToolView.bigOldFiles,
+                      onTap: () =>
+                          onSelect(const ToolNav(ToolView.bigOldFiles)),
+                    ),
+                    _NavRow(
+                      icon: CupertinoIcons.doc_on_doc_fill,
+                      label: 'Duplicates',
+                      accent: scheme.primary,
+                      active: selection is ToolNav &&
+                          (selection as ToolNav).view ==
+                              ToolView.duplicates,
+                      onTap: () =>
+                          onSelect(const ToolNav(ToolView.duplicates)),
+                    ),
+                    const SizedBox(height: AuroraTokens.sp4),
                     const _SectionHeader('Security'),
                     _NavRow(
                       icon: CupertinoIcons.bolt_fill,

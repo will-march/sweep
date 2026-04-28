@@ -172,26 +172,103 @@ class _CleanerScreenState extends State<CleanerScreen> {
     if (_entries.isEmpty) return;
     final brightness = Theme.of(context).brightness;
     final accent = levelPalette(widget.level).accent(brightness);
+    // Dry-run preview: show every entry that's about to be emptied with
+    // its size and risk so the user can see exactly what they're agreeing
+    // to before we touch anything.
     final ok = await showDialog<bool>(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text('Clean ${widget.level.title}?'),
-        content: Text(
-          'Empty contents of ${_entries.length} '
-          '${_entries.length == 1 ? "location" : "locations"}. Cannot be undone.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, false),
-            child: const Text('Cancel'),
+      builder: (ctx) {
+        final scheme = Theme.of(ctx).colorScheme;
+        final sorted = [..._entries]
+          ..sort((a, b) => b.sizeBytes.compareTo(a.sizeBytes));
+        return AlertDialog(
+          title: Text('Clean ${widget.level.title}?'),
+          content: SizedBox(
+            width: 520,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  '${_entries.length} '
+                  '${_entries.length == 1 ? "location" : "locations"} · '
+                  '${formatBytes(_total)} reclaimable. '
+                  'The directories are kept; only their contents are '
+                  'removed. Cannot be undone.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: scheme.onSurfaceVariant,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxHeight: 280),
+                  child: ListView.separated(
+                    shrinkWrap: true,
+                    itemCount: sorted.length,
+                    separatorBuilder: (_, __) => const SizedBox(height: 4),
+                    itemBuilder: (_, i) {
+                      final e = sorted[i];
+                      return Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: scheme.primary.withValues(alpha: 0.10),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              e.target.risk.label,
+                              style: TextStyle(
+                                fontSize: 9,
+                                fontWeight: FontWeight.w700,
+                                color: scheme.primary,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              e.target.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          ),
+                          Text(
+                            formatBytes(e.sizeBytes),
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontFeatures: const [
+                                FontFeature.tabularFigures()
+                              ],
+                              color: scheme.onSurface,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
-          FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: accent),
-            onPressed: () => Navigator.pop(ctx, true),
-            child: const Text('Clean'),
-          ),
-        ],
-      ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              style: FilledButton.styleFrom(backgroundColor: accent),
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Clean'),
+            ),
+          ],
+        );
+      },
     );
     if (ok != true) return;
 

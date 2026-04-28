@@ -8,7 +8,16 @@ extension UsageViewInfo on UsageView {
       };
 }
 
-enum ToolView { history, exclusions, schedule, uninstaller }
+enum ToolView {
+  history,
+  exclusions,
+  schedule,
+  uninstaller,
+  xcodeProjects,
+  orphanCaches,
+  bigOldFiles,
+  duplicates,
+}
 
 extension ToolViewInfo on ToolView {
   String get title => switch (this) {
@@ -16,6 +25,10 @@ extension ToolViewInfo on ToolView {
         ToolView.exclusions => 'Exclusions',
         ToolView.schedule => 'Schedule',
         ToolView.uninstaller => 'Uninstaller',
+        ToolView.xcodeProjects => 'Xcode Projects',
+        ToolView.orphanCaches => 'Project Caches',
+        ToolView.bigOldFiles => 'Big & Old Files',
+        ToolView.duplicates => 'Duplicates',
       };
 }
 

@@ -7,14 +7,19 @@ import '../services/permission_service.dart';
 import '../services/walkthrough_controller.dart';
 import '../widgets/aurora_app_bar.dart';
 import '../widgets/aurora_sidebar.dart';
+import '../widgets/disk_pressure_banner.dart';
 import '../widgets/walkthrough_overlay.dart';
+import 'big_old_files_screen.dart';
 import 'cleaner_screen.dart';
+import 'duplicates_screen.dart';
 import 'exclusions_screen.dart';
 import 'history_screen.dart';
+import 'orphan_caches_screen.dart';
 import 'schedule_screen.dart';
 import 'security_screen.dart';
 import 'tree_map_screen.dart';
 import 'uninstaller_screen.dart';
+import 'xcode_projects_screen.dart';
 
 class HomeShell extends StatefulWidget {
   /// True on the very first run after the splash + intro tour. When
@@ -85,6 +90,14 @@ class _HomeShellState extends State<HomeShell> {
         return ScheduleScreen(privileged: _privileged);
       case ToolNav(view: ToolView.uninstaller):
         return const UninstallerScreen();
+      case ToolNav(view: ToolView.xcodeProjects):
+        return const XcodeProjectsScreen();
+      case ToolNav(view: ToolView.orphanCaches):
+        return const OrphanCachesScreen();
+      case ToolNav(view: ToolView.bigOldFiles):
+        return const BigOldFilesScreen();
+      case ToolNav(view: ToolView.duplicates):
+        return const DuplicatesScreen();
       case SecurityNav(view: final v):
         return SecurityScreen(view: v);
     }
@@ -136,6 +149,7 @@ class _HomeShellState extends State<HomeShell> {
                         onRequestRoot:
                             _privileged ? null : _askForPermission,
                       ),
+                      DiskPressureBanner(privileged: _privileged),
                       Expanded(child: _content()),
                     ],
                   ),

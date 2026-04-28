@@ -143,6 +143,93 @@ const _development = <CacheTarget>[
     name: 'Docker VM Disk Images',
     risk: RiskLevel.higher,
   ),
+  // ----- Browser caches (granular) -----
+  CacheTarget(
+    path: '~/Library/Caches/com.apple.Safari',
+    name: 'Safari Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/Library/Caches/com.apple.WebKit.GPU',
+    name: 'Safari WebKit GPU Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/Library/Caches/Google/Chrome',
+    name: 'Chrome Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/Library/Application Support/Google/Chrome/Default/Service Worker',
+    name: 'Chrome Service Workers',
+    risk: RiskLevel.moderate,
+  ),
+  CacheTarget(
+    path: '~/Library/Caches/com.google.Chrome.helper',
+    name: 'Chrome Helper Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/Library/Caches/Firefox',
+    name: 'Firefox Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/Library/Caches/Microsoft Edge',
+    name: 'Microsoft Edge Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/Library/Caches/BraveSoftware',
+    name: 'Brave Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/Library/Caches/com.operasoftware.Opera',
+    name: 'Opera Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/Library/Caches/com.vivaldi.Vivaldi',
+    name: 'Vivaldi Cache',
+    risk: RiskLevel.safe,
+  ),
+  // ----- Toolchain caches (granular) -----
+  CacheTarget(
+    path: '~/Library/pnpm/store',
+    name: 'pnpm Store',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/.yarn/cache',
+    name: 'Yarn Berry Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/.deno/cache',
+    name: 'Deno Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/.bun/install/cache',
+    name: 'Bun Install Cache',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/.pub-cache/hosted',
+    name: 'Dart pub cache (hosted)',
+    risk: RiskLevel.safe,
+  ),
+  CacheTarget(
+    path: '~/.rustup/toolchains',
+    name: 'rustup toolchains',
+    risk: RiskLevel.moderate,
+  ),
+  CacheTarget(
+    path: '~/Library/Caches/CocoaPods',
+    name: 'CocoaPods Cache',
+    risk: RiskLevel.safe,
+  ),
 ];
 
 List<CacheTarget> targetsFor(CleaningLevel level) => switch (level) {
